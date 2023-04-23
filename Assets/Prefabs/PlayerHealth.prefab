@@ -227,8 +227,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f997715fa678dd4448a4f00d1bf01e15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerText: {fileID: 767621556519138574}
   playerNumberText: {fileID: 767621558255838028}
   playerHealthText: {fileID: 767621557488193396}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
+  activeColor: {r: 0.16470589, g: 0.48235294, b: 1, a: 1}
 --- !u!1 &767621557488193398
 GameObject:
   m_ObjectHideFlags: 0

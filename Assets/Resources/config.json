@@ -1,0 +1,12 @@
+{
+	"levels" : [
+		{
+			"playerCount" : 2,
+			"enemyCount" : 3
+		},
+		{
+			"playerCount" : 3,
+			"enemyCount" : 4
+		}
+	]
+}

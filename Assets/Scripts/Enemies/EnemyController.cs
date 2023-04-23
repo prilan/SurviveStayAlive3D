@@ -1,28 +1,29 @@
 ﻿using Enemies;
 using SurviveStayAlive;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Players
 {
     public class EnemyController : MonoBehaviour
     {
-        private Enemy currentEnemy;
-
+        private AbstractEnemy currentEnemy;
+        private Player currentAttackedPlayer;
         private MeshRenderer meshRenderer;
+        private Vector3 startPosition;
+
+        private bool isInitialized = false;
 
         private void Awake()
         {
             meshRenderer = GetComponent<MeshRenderer>();
+
+            startPosition = transform.position;
         }
 
-        private void Start()
+        private void OnDestroy()
         {
-            
+            currentEnemy.OnAttackDone -= OnAttackDone;
         }
 
         private void Update()
@@ -30,20 +31,30 @@ namespace Players
             if (AppModel.Instance.LogicState.CurrentLogicState == LogicStateEnum.PauseState)
                 return;
 
-            if (PlayersManager.Instance.CurrentPlayerController != this)
+            if (!isInitialized)
                 return;
 
             ProcessPosition();
         }
 
-        private void ProcessPosition()
+        public void SetStartPosition(Vector3 position)
         {
-            //
+            startPosition = position;
+            transform.position = position;
+
+            isInitialized = true;
         }
 
-        public void SetEnemy(Enemy enemy)
+        private void ProcessPosition()
+        {
+            currentEnemy.UpdateAction(transform, startPosition);
+        }
+
+        public void SetEnemy(AbstractEnemy enemy)
         {
             currentEnemy = enemy;
+
+            currentEnemy.OnAttackDone += OnAttackDone;
 
             SetEnemyColor();
         }
@@ -51,6 +62,18 @@ namespace Players
         private void SetEnemyColor()
         {
             meshRenderer.material.SetColor("_Color", currentEnemy.Color);
+        }
+
+        private void OnAttackDone()
+        {
+            SetActive(false);
+
+            EnemiesManager.Instance.RemoveEnemy(this);
+        }
+
+        private void SetActive(bool isActive)
+        {
+            gameObject.SetActive(isActive);
         }
     }
 }

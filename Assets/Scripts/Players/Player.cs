@@ -1,9 +1,5 @@
 ﻿using Factories;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Players
 {
@@ -16,5 +12,16 @@ namespace Players
             Health = playerFactory.Health;
             Speed = playerFactory.Speed;
         }
+
+        public void Attacked(int damage)
+        {
+            Health -= damage;
+
+            if (Health < 0)
+                Health = 0;
+        }
+
+        public Action<bool> OnSetActive;
+        public Action OnSetReachedGoal;
     }
 }

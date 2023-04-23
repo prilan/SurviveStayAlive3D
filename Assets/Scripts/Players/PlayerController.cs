@@ -1,9 +1,7 @@
-﻿using SurviveStayAlive;
+﻿using EventEmitter;
+using SurviveStayAlive;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Players
@@ -15,12 +13,19 @@ namespace Players
         [SerializeField] Color activeColor = Color.blue;
         [SerializeField] Color finishedColor = Color.green;
 
+        [SerializeField] float backShiftPositionvalue = 0.3f;
+
+        [Header("Visualization")]
+        [SerializeField] int Health;
+
         private Player currentPlayer;
 
         private MeshRenderer meshRenderer;
         
         private float sensitivityKoefficient = 0.1f;
         private float sensitivityShiftPerPress;
+
+        public Player Player => currentPlayer;
 
         private void Start()
         {
@@ -39,23 +44,25 @@ namespace Players
 
             ProcessKeyPress();
             ProcessPosition();
+
+            ShowHealth();
         }
 
         private void ProcessKeyPress()
         {
-            if (Input.GetKeyDown("w")) {
+            if (Input.GetKeyDown("w") || Input.GetKeyDown(KeyCode.UpArrow)) {
                 Vector3 newPosition = transform.position;
                 newPosition.z += sensitivityShiftPerPress;
                 transform.position = newPosition;
-            } else if (Input.GetKeyDown("a")) {
+            } else if (Input.GetKeyDown("a") || Input.GetKeyDown(KeyCode.LeftArrow)) {
                 Vector3 newPosition = transform.position;
                 newPosition.x -= sensitivityShiftPerPress;
                 transform.position = newPosition;
-            } else if (Input.GetKeyDown("s")) {
+            } else if (Input.GetKeyDown("s") || Input.GetKeyDown(KeyCode.DownArrow)) {
                 Vector3 newPosition = transform.position;
                 newPosition.z -= sensitivityShiftPerPress;
                 transform.position = newPosition;
-            } else if (Input.GetKeyDown("d")) {
+            } else if (Input.GetKeyDown("d") || Input.GetKeyDown(KeyCode.RightArrow)) {
                 Vector3 newPosition = transform.position;
                 newPosition.x += sensitivityShiftPerPress;
                 transform.position = newPosition;
@@ -64,12 +71,69 @@ namespace Players
 
         private void ProcessPosition()
         {
-            float distance = Vector3.Distance(meshRenderer.transform.position, transform.position);
-            if (distance < GameModel.Instance.GameController.SphereCollider.radius) {
-                // 
-            } else {
-                SetPlayerFinished();
+            ProcessInExitArea();
+            ProcessOnLevelSurface();
+        }
+
+        private void ProcessInExitArea()
+        {
+            int EXIT_AREA_LAYER_ID = 6;
+            int exitAreaLayerMask = (1 << EXIT_AREA_LAYER_ID);
+
+            bool isInExitArea = Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down), out RaycastHit hit, Mathf.Infinity, exitAreaLayerMask);
+
+            if (isInExitArea) {
+                SetPlayerReachedGoal();
+                CheckWinState();
             }
+        }
+
+        private void CheckWinState()
+        {
+            bool isWin = !PlayersManager.Instance.Players.Any();
+            if (isWin) {
+                AppModel.Instance.LogicState.ChangeState(LogicStateEnum.WinState);
+                GameEventEmitter.OnWinLevel();
+            }
+        }
+
+        private void SetPlayerReachedGoal()
+        {
+            SetPlayerFinished();
+            PlayersManager.Instance.ResetCurrentPlayerController();
+
+            currentPlayer.OnSetReachedGoal();
+        }
+
+        private void ProcessOnLevelSurface()
+        {
+            int LEVEL_SURFACE_LAYER_ID = 3;
+            int surfaceLayerMask = (1 << LEVEL_SURFACE_LAYER_ID);
+
+            bool isOnLevelSurface = Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down), out RaycastHit hit, Mathf.Infinity, surfaceLayerMask);
+
+            if (!isOnLevelSurface) {
+                SetPositionBack();
+            }
+        }
+
+        private void SetPositionBack()
+        {
+            Vector3 position = meshRenderer.transform.position;
+
+            if (position.x > 0) {
+                position.x -= backShiftPositionvalue;
+            } else { 
+                position.x += backShiftPositionvalue;
+            }
+
+            if (position.z > 0) {
+                position.z -= backShiftPositionvalue;
+            } else {
+                position.z += backShiftPositionvalue;
+            }
+
+            meshRenderer.transform.position = position;
         }
 
         public void SetPlayer(Player player)
@@ -88,6 +152,11 @@ namespace Players
 
             PlayersManager.Instance.RemovePlayerFromActivePlayers(this);
             AppModel.Instance.RemovePlayerFromActivePlayers(currentPlayer);
+        }
+
+        private void ShowHealth()
+        {
+            Health = currentPlayer.Health;
         }
     }
 }

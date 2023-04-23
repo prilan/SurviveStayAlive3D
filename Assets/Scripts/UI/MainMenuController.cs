@@ -1,5 +1,6 @@
 ﻿using EventEmitter;
 using Players;
+using SaveSystem;
 using SurviveStayAlive;
 using System;
 using System.Collections;
@@ -17,16 +18,25 @@ namespace SurviveStayAlive
         [SerializeField] Transform playerHealthGridTransform;
         [SerializeField] PlayerHealth playerHealthPrefab;
 
-        private string pauseText = "PAUSE";
+        [SerializeField] Button saveButton;
+        [SerializeField] Button loadButton;
 
-        private void Start()
+        private string pauseText = "PAUSE";
+        private string winText = "YOU WIN";
+
+        private void Awake()
         {
             GameEventEmitter.PlayersInited += OnPlayersInited;
+            GameEventEmitter.WinLevel += OnWinLevel;
+
+            saveButton.onClick.AddListener(OnSaveButtonClicked);
+            loadButton.onClick.AddListener(OnLoadButtonClicked);
         }
 
         private void OnDestroy()
         {
             GameEventEmitter.PlayersInited -= OnPlayersInited;
+            GameEventEmitter.WinLevel -= OnWinLevel;
         }
 
         private void Update()
@@ -44,20 +54,42 @@ namespace SurviveStayAlive
             }
         }
 
+        private void OnWinLevel()
+        {
+            SetMessage(true, winText);
+        }
+
+        private void OnSaveButtonClicked()
+        {
+            SaveStateManager.Instance.SaveDataState(AppModel.Instance.SaveDataState);
+        }
+
+        private void OnLoadButtonClicked()
+        {
+            if (SaveStateManager.Instance.HasSaveDataState())
+                AppModel.Instance.SaveDataState = SaveStateManager.Instance.LoadDataState();
+        }
+
         private void ProcessPauseUnPause()
         {
             if (AppModel.Instance.LogicState.CurrentLogicState == LogicStateEnum.PauseState) {
                 if (!messageText.isActiveAndEnabled) {
-                    messageText.text = pauseText;
-                    messageText.gameObject.SetActive(true);
-                    background.gameObject.SetActive(true);
+                    SetMessage(true, pauseText);
                 }
             } else if (AppModel.Instance.LogicState.CurrentLogicState == LogicStateEnum.PlayState) {
                 if (messageText.isActiveAndEnabled) {
-                    messageText.gameObject.SetActive(false);
-                    background.gameObject.SetActive(false);
+                    SetMessage(false);
                 }
             }
+        }
+
+        private void SetMessage(bool isActive, string message = null)
+        {
+            if (message != null)
+                messageText.text = message;
+
+            messageText.gameObject.SetActive(isActive);
+            background.gameObject.SetActive(isActive);
         }
     }
 }

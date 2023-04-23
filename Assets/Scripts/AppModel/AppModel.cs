@@ -1,22 +1,33 @@
-﻿using Enemies;
+﻿using DataModel;
+using Enemies;
 using Factories;
 using Players;
+using SaveState;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 using Utility;
 
 namespace SurviveStayAlive
 {
-    public class AppModel : Singleton<AppModel>
+    public class AppModel : AbstractSingleton<AppModel>
     {
+        public GameConfiguration GameConfiguration;
+        public LevelsListFormat levelsListConfig;
+
+        public LevelFormat CurrentLevel;
+        public int CurrentLevelIndex;
+
+        public SaveDataState SaveDataState = new SaveDataState();
+
         private Dictionary<int, Player> playerDictionary = new Dictionary<int, Player>();
-        private Dictionary<int, Enemy> enemyDictionary = new Dictionary<int, Enemy>();
+        private Dictionary<int, AbstractEnemy> enemyDictionary = new Dictionary<int, AbstractEnemy>();
 
         public Dictionary<int, Player> PlayerDictionary => playerDictionary;
-        public Dictionary<int, Enemy> EnemyDictionary => enemyDictionary;
+        public Dictionary<int, AbstractEnemy> EnemyDictionary => enemyDictionary;
 
         public LogicState LogicState;
 
@@ -29,7 +40,7 @@ namespace SurviveStayAlive
         {
             playerDictionary.Clear();
 
-            for (int index = 0; index < GameManager.Instance.PlayerCount; index++) {
+            for (int index = 0; index < AppModel.Instance.CurrentLevel.playerCount; index++) {
                 Player player = new BasePlayer(new BasePlayerFactory());
                 playerDictionary.Add(index, player);
             }
@@ -39,23 +50,26 @@ namespace SurviveStayAlive
         {
             enemyDictionary.Clear();
 
-            int enemyCount = GameManager.Instance.EnemyCount;
+            int enemyCount = AppModel.Instance.CurrentLevel.enemyCount;
             int enemyIndex = 0;
 
-            Enemy bossEnemy = new Enemy(new BossEnemyFactory());
-            enemyDictionary.Add(enemyIndex, bossEnemy);
+            // Один враг двигающийся по своей траектории
+            MovableEnemy movableEnemy = new MovableEnemy(new MovableEnemyFactory());
+            enemyDictionary.Add(enemyIndex, movableEnemy);
             enemyIndex++;
 
-            Enemy fastEnemy = new Enemy(new FastEnemyFactory());
-            enemyDictionary.Add(enemyIndex, fastEnemy);
+            // Один враг, преследующий объект игрока
+            StalkingEnemy stalkingEnemy = new StalkingEnemy(new StalkingEnemyFactory());
+            enemyDictionary.Add(enemyIndex, stalkingEnemy);
             enemyIndex++;
 
-            if (enemyCount < 2)
+            if (enemyCount <= 2)
                 return;
 
-            for (int index = enemyDictionary.Count; index < GameManager.Instance.EnemyCount; index++) {
-                Enemy enemy = new Enemy(new DistantEnemyFactory());
-                enemyDictionary.Add(index, enemy);
+            // Если врагов более 2, то все остальные враги стреляющие
+            for (int index = enemyDictionary.Count; index < enemyCount; index++) {
+                ShootingEnemy shootingEnemy = new ShootingEnemy(new ShootingEnemyFactory());
+                enemyDictionary.Add(index, shootingEnemy);
             }
         }
 
@@ -65,9 +79,9 @@ namespace SurviveStayAlive
             return player;
         }
 
-        public Enemy GetEnemyByIndex(int index)
+        public AbstractEnemy GetEnemyByIndex(int index)
         {
-            Enemy enemy = enemyDictionary[index];
+            AbstractEnemy enemy = enemyDictionary[index];
             return enemy;
         }
 
@@ -76,6 +90,42 @@ namespace SurviveStayAlive
             var playerItem = playerDictionary.First(playerPair => playerPair.Value == player);
 
             playerDictionary.Remove(playerItem.Key);
+        }
+
+        public void LoadLevelsConfig()
+        {
+            TextAsset textAsset = Resources.Load<TextAsset>("config");
+            if (textAsset == null)
+                return;
+
+            levelsListConfig = JsonUtility.FromJson<LevelsListFormat>(textAsset.text);
+
+            if (levelsListConfig != null && levelsListConfig.levels != null && levelsListConfig.levels.Any()) {
+                CurrentLevelIndex = 0;
+                CurrentLevel = levelsListConfig.levels[CurrentLevelIndex];
+
+                SaveDataState.SaveData.currentLevel = CurrentLevel;
+                
+            }
+        }
+
+        public void UpdateDataState()
+        {
+            SaveDataState.SaveData.currentLevel = CurrentLevel;
+
+            if (SaveDataState.SaveData.players == null || !SaveDataState.SaveData.players.Any()) {
+                SaveDataState.SaveData.players = Enumerable.Repeat(new PlayerFormat(), CurrentLevel.playerCount).ToList();
+            }
+
+            for (int index = 0; index < CurrentLevel.playerCount; index++) {
+                if ((index >= PlayersManager.Instance.Players.Count) || (index >= SaveDataState.SaveData.players.Count))
+                    continue;
+
+                PlayerController playerController = PlayersManager.Instance.Players.Values.ElementAt(index);
+
+                SaveDataState.SaveData.players[index].health = playerController.Player.Health;
+                SaveDataState.SaveData.players[index].position = playerController.transform.position;
+            }
         }
     }
 }
