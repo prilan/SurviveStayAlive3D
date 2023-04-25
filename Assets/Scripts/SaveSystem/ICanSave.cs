@@ -6,7 +6,7 @@ namespace SaveSystem
     {
         public string ToSaveGame()
         {
-            return JsonUtility.ToJson(this);
+            return JsonUtility.ToJson(this, true);
         }
 
         public T FromSaveGame(string json)

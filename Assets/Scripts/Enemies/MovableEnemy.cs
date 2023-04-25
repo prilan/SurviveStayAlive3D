@@ -20,6 +20,7 @@ namespace Enemies
         public MovableEnemy(MovableEnemyFactory enemyFactory) : base(enemyFactory)
         {
             Speed = enemyFactory.Speed;
+            EnemyType = EnemyType.Movable;
         }
 
         public override void UpdateAction(Transform transform, Vector3 startPosition)

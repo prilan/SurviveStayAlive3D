@@ -6,8 +6,9 @@ namespace SurviveStayAlive
     public enum LogicStateEnum
     {
         PlayState,
-        WinState,
         PauseState,
+        WinState,
+        LoseState,
     }
 
     public class LogicState

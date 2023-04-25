@@ -12,7 +12,11 @@ namespace Players
         private MeshRenderer meshRenderer;
         private Vector3 startPosition;
 
+        public Vector3 StartPosition => startPosition;
+
         private bool isInitialized = false;
+
+        public AbstractEnemy Enemy => currentEnemy;
 
         private void Awake()
         {
@@ -54,9 +58,12 @@ namespace Players
         {
             currentEnemy = enemy;
 
-            currentEnemy.OnAttackDone += OnAttackDone;
-
             SetEnemyColor();
+        }
+
+        public void AddListener()
+        {
+            currentEnemy.OnAttackDone += OnAttackDone;
         }
 
         private void SetEnemyColor()

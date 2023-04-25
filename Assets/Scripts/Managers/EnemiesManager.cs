@@ -1,4 +1,5 @@
-﻿using Enemies;
+﻿using DataModel;
+using Enemies;
 using Players;
 using System;
 using System.Collections;
@@ -19,21 +20,43 @@ namespace SurviveStayAlive
 
         private Random random = new Random();
 
+        public Dictionary<int, EnemyController> Enemies => enemyDictionary;
+
         public void CreateEnemy()
         {
             int index = enemyDictionary.Count;
             EnemyController enemyController = Instantiate(enemyControllerPrefab, enemiesTransform);
             AbstractEnemy enemy = AppModel.Instance.GetEnemyByIndex(index);
             enemyController.SetEnemy(enemy);
+            enemyController.AddListener();
             enemyController.SetStartPosition(GetRandomEnemyPosition());
             enemyDictionary.Add(index, enemyController);
         }
 
+        public void UpdateEnemyFromState(int index, EnemyFormat enemyFormat)
+        {
+            EnemyController enemyController = enemyDictionary[index];
+            AbstractEnemy enemy = AppModel.Instance.GetEnemyByIndex(index);
+            enemy.EnemyType = EnemyUtility.GetEnumValueFromDescription<EnemyType>(enemyFormat.enemyType);
+            enemyController.SetEnemy(enemy);
+            enemyController.SetStartPosition(enemyFormat.position);
+        }
+
+        public void RemoveEnemies()
+        {
+            foreach (EnemyController enemyController in enemyDictionary.Values) {
+                Destroy(enemyController.gameObject);
+            }
+
+            enemyDictionary.Clear();
+        }
+
         public void RemoveEnemy(EnemyController enemyController)
         {
-            var enemyItem = enemyDictionary.First(enemyPair => enemyPair.Value == enemyController);
-
-            enemyDictionary.Remove(enemyItem.Key);
+            if (enemyDictionary.Any(enemyPair => enemyPair.Value == enemyController)) {
+                var enemyItem = enemyDictionary.First(enemyPair => enemyPair.Value == enemyController);
+                enemyDictionary.Remove(enemyItem.Key);
+            }
         }
 
         private Vector3 GetRandomEnemyPosition()

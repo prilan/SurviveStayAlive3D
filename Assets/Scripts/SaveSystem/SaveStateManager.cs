@@ -6,28 +6,13 @@ namespace SaveSystem
 {
     public class SaveStateManager : AbstractSingleton<SaveStateManager>
     {
-        private const string SAVE_DATA_KEY = "SAVE_DATA_KEY";
-        
-        public void SaveDataState(SaveDataState saveData)
-        {
-            PlayerPrefs.SetString(SAVE_DATA_KEY, saveData.ToSaveGame());
-        }
+        public ISaveSystem SaveSystem => SaveSystemManager.SaveSystem;
 
-        public SaveDataState LoadDataState()
-        {
-            string dataString = PlayerPrefs.GetString(SAVE_DATA_KEY);
-            SaveDataState saveDataState = new SaveDataState();
-            saveDataState = saveDataState.FromSaveGame(dataString);
+        public SaveSystemManager SaveSystemManager { get; private set; } = new SaveSystemManager(new PlayerPrefsSaveSystem());
 
-            return saveDataState;
-        }
-
-        public bool HasSaveDataState()
+        public void ChangeSaveSystem(ISaveSystem saveSystem)
         {
-            return PlayerPrefs.HasKey(SAVE_DATA_KEY);
+            SaveSystemManager = new SaveSystemManager(saveSystem);
         }
-        
-        /*-------------------------------------------------------*/
-        
     }
 }

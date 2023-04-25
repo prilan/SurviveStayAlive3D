@@ -11,6 +11,8 @@ namespace Enemies
 
         public Color Color;
 
+        public EnemyType EnemyType;
+
         public event Action OnAttackDone = () => { };
 
         public AbstractEnemy(AbstractEnemyFactory enemyFactory)

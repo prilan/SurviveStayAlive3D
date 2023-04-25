@@ -82,6 +82,7 @@ namespace Enemies.Shell
             player.Attacked(currentDamage);
 
             SetActive(false);
+            Destroy(gameObject);
         }
 
         private void SetActive(bool isActive)

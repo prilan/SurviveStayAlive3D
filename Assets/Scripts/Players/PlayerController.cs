@@ -8,12 +8,11 @@ namespace Players
 {
     public class PlayerController : MonoBehaviour
     {
-        [SerializeField] float sensitivity = 1f;
         [SerializeField] Color defaultColor = Color.white;
         [SerializeField] Color activeColor = Color.blue;
         [SerializeField] Color finishedColor = Color.green;
 
-        [SerializeField] float backShiftPositionvalue = 0.3f;
+        [SerializeField] float backShiftPositionvalue = 1f;
 
         [Header("Visualization")]
         [SerializeField] int Health;
@@ -22,8 +21,10 @@ namespace Players
 
         private MeshRenderer meshRenderer;
         
-        private float sensitivityKoefficient = 0.1f;
+        private float sensitivityKoefficient = 0.001f;
         private float sensitivityShiftPerPress;
+
+        private Vector3 force = Vector3.zero;
 
         public Player Player => currentPlayer;
 
@@ -31,7 +32,7 @@ namespace Players
         {
             meshRenderer = GetComponent<MeshRenderer>();
 
-            sensitivityShiftPerPress = sensitivity * sensitivityKoefficient;
+            sensitivityShiftPerPress = currentPlayer.Speed * sensitivityKoefficient;
         }
 
         private void Update()
@@ -46,23 +47,27 @@ namespace Players
             ProcessPosition();
 
             ShowHealth();
+            CheckLoseState();
         }
 
         private void ProcessKeyPress()
         {
-            if (Input.GetKeyDown("w") || Input.GetKeyDown(KeyCode.UpArrow)) {
+            if (Input.GetKey("w") || Input.GetKey(KeyCode.UpArrow)) {
                 Vector3 newPosition = transform.position;
                 newPosition.z += sensitivityShiftPerPress;
                 transform.position = newPosition;
-            } else if (Input.GetKeyDown("a") || Input.GetKeyDown(KeyCode.LeftArrow)) {
+            }
+            if (Input.GetKey("a") || Input.GetKey(KeyCode.LeftArrow)) {
                 Vector3 newPosition = transform.position;
                 newPosition.x -= sensitivityShiftPerPress;
                 transform.position = newPosition;
-            } else if (Input.GetKeyDown("s") || Input.GetKeyDown(KeyCode.DownArrow)) {
+            }
+            if (Input.GetKey("s") || Input.GetKey(KeyCode.DownArrow)) {
                 Vector3 newPosition = transform.position;
                 newPosition.z -= sensitivityShiftPerPress;
                 transform.position = newPosition;
-            } else if (Input.GetKeyDown("d") || Input.GetKeyDown(KeyCode.RightArrow)) {
+            }
+            if (Input.GetKey("d") || Input.GetKey(KeyCode.RightArrow)) {
                 Vector3 newPosition = transform.position;
                 newPosition.x += sensitivityShiftPerPress;
                 transform.position = newPosition;
@@ -94,6 +99,17 @@ namespace Players
             if (isWin) {
                 AppModel.Instance.LogicState.ChangeState(LogicStateEnum.WinState);
                 GameEventEmitter.OnWinLevel();
+            }
+        }
+
+        private void CheckLoseState()
+        {
+            if (AppModel.Instance.LogicState.CurrentLogicState != LogicStateEnum.PlayState)
+                return;
+
+            if (currentPlayer.Health <= 0) {
+                AppModel.Instance.LogicState.ChangeState(LogicStateEnum.LoseState);
+                GameEventEmitter.OnLoseLevel();
             }
         }
 

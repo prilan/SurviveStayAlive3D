@@ -110,6 +110,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41fbccafb6f5dde4a98d1aae983795ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sensitivity: 2
   defaultColor: {r: 1, g: 1, b: 1, a: 1}
   activeColor: {r: 0.16509432, g: 0.4827993, b: 1, a: 1}
+  finishedColor: {r: 0, g: 1, b: 0, a: 1}
+  backShiftPositionvalue: 1
+  Health: 0

@@ -1,38 +1,29 @@
-﻿using EventEmitter;
+﻿using DataModel;
+using EventEmitter;
+using SaveState;
 using SurviveStayAlive;
 using System;
+using System.Reflection;
 using UnityEngine;
 
 namespace SurviveStayAlive
 {
     public class GameController : MonoBehaviour
     {
-        [SerializeField] MeshRenderer gameArea;
         [SerializeField] MeshRenderer levelSurface;
 
-        private SphereCollider sphereCollider;
         private MeshCollider surfaceCollider;
 
-        public SphereCollider SphereCollider { get { return sphereCollider; } }
         public MeshCollider SurfaceCollider { get { return surfaceCollider; } }
 
-        public MeshRenderer GameArea
+        private void Start()
         {
-            get
-            {
-                return gameArea;
-            }
-        }
-
-        void Start()
-        {
-            sphereCollider = gameArea.GetComponent<SphereCollider>();
             surfaceCollider = levelSurface.GetComponent<MeshCollider>();
 
             Initialize();
         }
 
-        void Update()
+        private void Update()
         {
             if (PlayersManager.Instance.IsActivePlayersEmpty && AppModel.Instance.LogicState.CurrentLogicState == LogicStateEnum.PlayState) {
                 AppModel.Instance.LogicState.ChangeState(LogicStateEnum.PauseState);
@@ -45,23 +36,83 @@ namespace SurviveStayAlive
 
             AppModel.Instance.LoadLevelsConfig();
 
+            CreatePlayersAndEnemies();
+
+            AppModel.Instance.UpdateDataState();
+
+            GameEventEmitter.OnPlayersInited();
+        }
+
+        private static void CreatePlayersAndEnemies()
+        {
             AppModel.Instance.CreatePlayers();
             AppModel.Instance.CreateEnemies();
 
             int playerCount = AppModel.Instance.CurrentLevel.playerCount;
             int enemyCount = AppModel.Instance.CurrentLevel.enemyCount;
 
-            for (int i = 0; i < playerCount; i++) {
+            for (int index = 0; index < playerCount; index++) {
                 PlayersManager.Instance.CreatePlayer();
             }
 
-            for (int i = 0;i < enemyCount; i++) {
+            for (int index = 0; index < enemyCount; index++) {
                 EnemiesManager.Instance.CreateEnemy();
             }
+        }
 
-            AppModel.Instance.UpdateDataState();
+        public void RestartLevel()
+        {
+            AppModel.Instance.Init(new LogicState(LogicStateEnum.PlayState));
 
-            GameEventEmitter.OnPlayersInited();
+            RemoveAllGameEntities();
+
+            CreatePlayersAndEnemies();
+
+            GameEventEmitter.OnRestartLevel();
+        }
+
+        public void LoadNextLevel()
+        {
+            AppModel.Instance.Init(new LogicState(LogicStateEnum.PlayState));
+
+            AppModel.Instance.LoadNextLevel();
+
+            RemoveAllGameEntities();
+
+            CreatePlayersAndEnemies();
+
+            GameEventEmitter.OnRestartLevel();
+        }
+
+        public void LoadSavedState()
+        {
+            AppModel.Instance.LoadSavedState();
+
+            RemoveAllGameEntities();
+
+            CreatePlayersAndEnemies();
+
+            int playerCount = AppModel.Instance.CurrentLevel.playerCount;
+            int enemyCount = AppModel.Instance.CurrentLevel.enemyCount;
+
+            SaveDataFormat saveDataFormat = AppModel.Instance.SaveDataState.SaveData;
+
+            for (int index = 0; index < playerCount; index++) {
+                PlayersManager.Instance.UpdatePlayerFromState(index, saveDataFormat.players[index]);
+            }
+
+            for (int index = 0; index < enemyCount; index++) {
+                EnemiesManager.Instance.UpdateEnemyFromState(index, saveDataFormat.enemies[index]);
+            }
+
+            GameEventEmitter.OnRestartLevel();
+        }
+
+        private static void RemoveAllGameEntities()
+        {
+            AppModel.Instance.RemovePlayersAndEnemies();
+            PlayersManager.Instance.RemovePlayers();
+            EnemiesManager.Instance.RemoveEnemies();
         }
     }
 }

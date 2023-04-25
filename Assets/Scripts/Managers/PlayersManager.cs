@@ -1,8 +1,10 @@
-﻿using Players;
+﻿using DataModel;
+using Players;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using Utility;
 using Random = System.Random;
@@ -15,6 +17,7 @@ namespace SurviveStayAlive
         [SerializeField] Transform playersTransform;
 
         private Dictionary<int, PlayerController> playerDictionary = new Dictionary<int, PlayerController>();
+        private Dictionary<int, PlayerController> removePlayerDictionary = new Dictionary<int, PlayerController>();
 
         private PlayerController currentPlayerController;
 
@@ -46,6 +49,30 @@ namespace SurviveStayAlive
             if (currentPlayerController == null) {
                 currentPlayerController = playerDictionary.Values.First();
             }
+        }
+
+        public void UpdatePlayerFromState(int index, PlayerFormat playerFormat)
+        {
+            PlayerController playerController = playerDictionary[index];
+            Player player = AppModel.Instance.GetPlayerByIndex(index);
+            playerController.transform.position = playerFormat.position;
+            player.Health = playerFormat.health;
+        }
+
+        public void RemovePlayers()
+        {
+            foreach (PlayerController playerController in playerDictionary.Values) {
+                Destroy(playerController.gameObject);
+            }
+
+            foreach (PlayerController playerController in removePlayerDictionary.Values) {
+                Destroy(playerController.gameObject);
+            }
+
+            playerDictionary.Clear();
+            removePlayerDictionary.Clear();
+
+            ResetCurrentPlayerController();
         }
 
         public void ResetCurrentPlayerController()
@@ -100,6 +127,8 @@ namespace SurviveStayAlive
         public void RemovePlayerFromActivePlayers(PlayerController playerController)
         {
             var playerItem = playerDictionary.First(playerPair => playerPair.Value == playerController);
+
+            removePlayerDictionary[playerItem.Key] = playerItem.Value;
 
             playerDictionary.Remove(playerItem.Key);
         }

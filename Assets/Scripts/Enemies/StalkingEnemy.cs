@@ -17,6 +17,7 @@ namespace Enemies
         {
             Speed = enemyFactory.Speed;
             Distance = enemyFactory.Distance;
+            EnemyType = EnemyType.Stalking;
         }
 
         public override void UpdateAction(Transform transform, Vector3 startPosition)
@@ -41,7 +42,7 @@ namespace Enemies
 
         private void StalkingToPlayer(Transform transform, PlayerController playerController)
         {
-            float speedDelta = Time.deltaTime * Speed;
+            float speedDelta = Time.deltaTime * Speed * 0.2f;
 
             Vector3 position = transform.position;
             Vector3 playerPosition = playerController.transform.position;

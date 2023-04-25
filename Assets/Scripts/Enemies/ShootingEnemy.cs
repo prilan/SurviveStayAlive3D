@@ -21,11 +21,11 @@ namespace Enemies
         public ShootingEnemy(ShootingEnemyFactory enemyFactory) : base(enemyFactory)
         {
             Distance = enemyFactory.Distance;
+            EnemyType = EnemyType.Shooting;
         }
 
         public override void UpdateAction(Transform transform, Vector3 startPosition)
         {
-            
             CheckPlayerNear(transform);
         }
 

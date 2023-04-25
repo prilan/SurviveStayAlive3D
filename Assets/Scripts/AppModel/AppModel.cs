@@ -73,6 +73,12 @@ namespace SurviveStayAlive
             }
         }
 
+        public void RemovePlayersAndEnemies()
+        {
+            playerDictionary.Clear();
+            enemyDictionary.Clear();
+        }
+
         public Player GetPlayerByIndex(int index)
         {
             Player player = playerDictionary[index];
@@ -109,23 +115,64 @@ namespace SurviveStayAlive
             }
         }
 
+        public void LoadNextLevel()
+        {
+            if (CurrentLevelIndex + 1 < levelsListConfig.levels.Count)
+                CurrentLevelIndex++;
+            else
+                CurrentLevelIndex = 0;
+
+            CurrentLevel = levelsListConfig.levels[CurrentLevelIndex];
+        }
+
         public void UpdateDataState()
         {
+            SaveDataState.SaveData.currentLevelIndex = CurrentLevelIndex;
             SaveDataState.SaveData.currentLevel = CurrentLevel;
 
-            if (SaveDataState.SaveData.players == null || !SaveDataState.SaveData.players.Any()) {
-                SaveDataState.SaveData.players = Enumerable.Repeat(new PlayerFormat(), CurrentLevel.playerCount).ToList();
-            }
+            SaveDataState.SaveData.players = new List<PlayerFormat>();
 
             for (int index = 0; index < CurrentLevel.playerCount; index++) {
-                if ((index >= PlayersManager.Instance.Players.Count) || (index >= SaveDataState.SaveData.players.Count))
+                if (index >= PlayersManager.Instance.Players.Count)
                     continue;
 
                 PlayerController playerController = PlayersManager.Instance.Players.Values.ElementAt(index);
 
-                SaveDataState.SaveData.players[index].health = playerController.Player.Health;
-                SaveDataState.SaveData.players[index].position = playerController.transform.position;
+                PlayerFormat player = new PlayerFormat();
+
+                player.health = playerController.Player.Health;
+                player.position = playerController.transform.position;
+
+                SaveDataState.SaveData.players.Add(player);
             }
+
+            SaveDataState.SaveData.enemies = new List<EnemyFormat>();
+
+            for (int index = 0; index < CurrentLevel.enemyCount; index++) {
+                if (index >= EnemiesManager.Instance.Enemies.Count)
+                    continue;
+
+                EnemyController enemyController = EnemiesManager.Instance.Enemies.Values.ElementAt(index);
+
+                EnemyFormat enemy = new EnemyFormat();
+
+                enemy.enemyType = enemyController.Enemy.EnemyType.ToString();
+                enemy.position = enemyController.StartPosition;
+
+                SaveDataState.SaveData.enemies.Add(enemy);
+            }
+
+            if (SaveDataState.SaveData.currentLevel.playerCount > SaveDataState.SaveData.players.Count)
+                SaveDataState.SaveData.currentLevel.playerCount = SaveDataState.SaveData.players.Count;
+
+            if (SaveDataState.SaveData.currentLevel.enemyCount > SaveDataState.SaveData.enemies.Count)
+                SaveDataState.SaveData.currentLevel.enemyCount = SaveDataState.SaveData.enemies.Count;
+        }
+
+        public void LoadSavedState()
+        {
+            CurrentLevelIndex = SaveDataState.SaveData.currentLevelIndex;
+            CurrentLevel = SaveDataState.SaveData.currentLevel;
         }
     }
 }
