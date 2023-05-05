@@ -25,12 +25,7 @@ namespace Enemies
 
         public override void UpdateAction(Transform transform, Vector3 startPosition)
         {
-            timeCounter += Time.deltaTime / 7 * Speed;
-
-            float x = startPosition.x + 4 * Mathf.Cos(timeCounter);
-            float y = transform.position.y;
-            float z = startPosition.z - 4 * Mathf.Sin(timeCounter);
-            transform.position = new Vector3(x, y, z);
+            Move(transform);
 
             CheckPlayerNear(transform);
         }
@@ -51,6 +46,16 @@ namespace Enemies
             player.Attacked(Damage);
 
             AttackDone();
+        }
+
+        public void Move(Transform transform)
+        {
+            timeCounter += Time.deltaTime / 7 * Speed;
+
+            float x = startPosition.x + 4 * Mathf.Cos(timeCounter);
+            float y = transform.position.y;
+            float z = startPosition.z - 4 * Mathf.Sin(timeCounter);
+            transform.position = new Vector3(x, y, z);
         }
     }
 }

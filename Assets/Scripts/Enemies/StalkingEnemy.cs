@@ -70,5 +70,10 @@ namespace Enemies
 
             AttackDone();
         }
+
+        public void Move(Transform transform)
+        {
+            
+        }
     }
 }
