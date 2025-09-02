@@ -1,6 +1,7 @@
 ﻿using Factories;
 using Players;
 using System;
+using Factories.EnemyFactories;
 using UnityEngine;
 
 namespace Enemies

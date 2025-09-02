@@ -1,9 +1,10 @@
 ﻿using Enemies;
 using SurviveStayAlive;
 using System;
+using Players;
 using UnityEngine;
 
-namespace Players
+namespace Enemies
 {
     public class EnemyController : MonoBehaviour
     {

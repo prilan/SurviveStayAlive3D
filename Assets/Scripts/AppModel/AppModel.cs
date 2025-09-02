@@ -8,6 +8,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Factories.EnemyFactories;
+using Factories.PlayerFactories;
 using UnityEngine;
 using Utility;
 

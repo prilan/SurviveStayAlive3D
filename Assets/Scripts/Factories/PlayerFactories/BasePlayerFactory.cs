@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Factories
+namespace Factories.PlayerFactories
 {
     public class BasePlayerFactory : PlayerFactory
     {

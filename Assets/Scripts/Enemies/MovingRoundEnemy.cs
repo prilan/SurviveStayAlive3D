@@ -1,4 +1,5 @@
 using Factories;
+using Factories.EnemyFactories;
 using UnityEngine;
 
 namespace Enemies

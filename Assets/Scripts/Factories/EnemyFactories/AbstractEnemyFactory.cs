@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Factories
+namespace Factories.EnemyFactories
 {
     public abstract class AbstractEnemyFactory
     {
