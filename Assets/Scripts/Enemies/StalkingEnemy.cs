@@ -7,37 +7,21 @@ using Utility;
 
 namespace Enemies
 {
-    public class StalkingEnemy : AbstractEnemy, IEnemyMovable, IEnemyDistant
+    public class StalkingEnemy : MovableEnemy, IEnemyDistant
     {
-        public int Speed { get; }
-
         public int Distance { get; }
 
         public StalkingEnemy(StalkingEnemyFactory enemyFactory) : base(enemyFactory)
         {
-            Speed = enemyFactory.Speed;
             Distance = enemyFactory.Distance;
             EnemyType = EnemyType.Stalking;
         }
 
-        public override void UpdateAction(Transform transform, Vector3 startPosition)
+        protected override void ActionWhenNear(Transform transform, PlayerController playerController)
         {
-            CheckPlayerNear(transform);
-        }
-
-        private void CheckPlayerNear(Transform transform)
-        {
-            foreach (var playerPair in PlayersManager.Instance.PlayerDictionary) {
-                PlayerController playerController = playerPair.Value;
-                float distanceToPlayer = Vector3.Distance(playerController.transform.position, transform.position);
-                if (distanceToPlayer < Distance) {
-                    if (distanceToPlayer < CommonUtility.MINIMAL_DISTANCE_TO_PLAYER) {
-                        Attack(playerController.Player);
-                    }
-
-                    StalkingToPlayer(transform, playerController);
-                }
-            }
+            base.ActionWhenNear(transform, playerController);
+            
+            StalkingToPlayer(transform, playerController);
         }
 
         private void StalkingToPlayer(Transform transform, PlayerController playerController)
@@ -62,18 +46,6 @@ namespace Enemies
             float y = transform.position.y;
             float z = position.z + deltaZ;
             transform.position = new Vector3(x, y, z);
-        }
-
-        public override void Attack(Player player)
-        {
-            player.Attacked(Damage);
-
-            AttackDone();
-        }
-
-        public void Move(Transform transform)
-        {
-            
         }
     }
 }

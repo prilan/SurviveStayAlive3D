@@ -13,11 +13,9 @@ namespace Enemies
     {
         public int Speed { get; }
 
-        private float timeCounter = 0;
+        protected Vector3 StartPosition = Vector3.zero;
 
-        Vector3 startPosition = Vector3.zero;
-
-        public MovableEnemy(MovableEnemyFactory enemyFactory) : base(enemyFactory)
+        protected MovableEnemy(MovableEnemyFactory enemyFactory) : base(enemyFactory)
         {
             Speed = enemyFactory.Speed;
             EnemyType = EnemyType.Movable;
@@ -25,9 +23,14 @@ namespace Enemies
 
         public override void UpdateAction(Transform transform, Vector3 startPosition)
         {
+            StartPosition = startPosition;
+            
             Move(transform);
-
             CheckPlayerNear(transform);
+        }
+
+        protected virtual void ActionWhenNear(Transform transform, PlayerController playerController)
+        {
         }
 
         private void CheckPlayerNear(Transform transform)
@@ -38,6 +41,8 @@ namespace Enemies
                 if (distanceToPlayer < CommonUtility.MINIMAL_DISTANCE_TO_PLAYER) {
                     Attack(playerController.Player);
                 }
+                
+                ActionWhenNear(transform, playerController);
             }
         }
 
@@ -48,14 +53,8 @@ namespace Enemies
             AttackDone();
         }
 
-        public void Move(Transform transform)
+        public virtual void Move(Transform transform)
         {
-            timeCounter += Time.deltaTime / 7 * Speed;
-
-            float x = startPosition.x + 4 * Mathf.Cos(timeCounter);
-            float y = transform.position.y;
-            float z = startPosition.z - 4 * Mathf.Sin(timeCounter);
-            transform.position = new Vector3(x, y, z);
         }
     }
 }

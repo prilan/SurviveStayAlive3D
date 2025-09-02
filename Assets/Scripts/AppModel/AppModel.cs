@@ -54,7 +54,7 @@ namespace SurviveStayAlive
             int enemyIndex = 0;
 
             // Один враг двигающийся по своей траектории
-            MovableEnemy movableEnemy = new MovableEnemy(new MovableEnemyFactory());
+            MovingRoundEnemy movableEnemy = new MovingRoundEnemy(new MovableEnemyFactory());
             enemyDictionary.Add(enemyIndex, movableEnemy);
             enemyIndex++;
 
