@@ -1,7 +1,5 @@
-﻿using Enemies;
+﻿using Players;
 using SurviveStayAlive;
-using System;
-using Players;
 using UnityEngine;
 
 namespace Enemies
@@ -15,7 +13,7 @@ namespace Enemies
 
         public Vector3 StartPosition => startPosition;
 
-        private bool isInitialized = false;
+        private bool isInitialized;
 
         public AbstractEnemy Enemy => currentEnemy;
 

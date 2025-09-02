@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
-using Utility;
+﻿using Utility;
 
 namespace SurviveStayAlive
 {

@@ -1,10 +1,7 @@
-﻿using DataModel;
-using Players;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using DataModel;
+using Players;
 using UnityEngine;
 using Utility;
 using Random = System.Random;
@@ -13,59 +10,51 @@ namespace SurviveStayAlive
 {
     public class PlayersManager : MonoSingleton<PlayersManager>
     {
-        [SerializeField] PlayerController playerControllerPrefab;
-        [SerializeField] Transform playersTransform;
+        [SerializeField] private PlayerController playerControllerPrefab;
+        [SerializeField] private Transform playersTransform;
 
-        private Dictionary<int, PlayerController> playerDictionary = new Dictionary<int, PlayerController>();
-        private Dictionary<int, PlayerController> removePlayerDictionary = new Dictionary<int, PlayerController>();
+        private readonly Dictionary<int, PlayerController> playerDictionary = new();
+        private readonly Dictionary<int, PlayerController> removePlayerDictionary = new();
 
-        private PlayerController currentPlayerController;
+        private readonly Random random = new();
 
-        private Random random = new Random();
-
-        public PlayerController CurrentPlayerController { get {  return currentPlayerController; } }
+        public PlayerController CurrentPlayerController { get; private set; }
 
         public Dictionary<int, PlayerController> Players => playerDictionary;
 
-        public bool IsActivePlayersEmpty
-        {
-            get
-            {
-                return playerDictionary.Values.Count == 0;
-            }
-        }
+        public bool IsActivePlayersEmpty => playerDictionary.Values.Count == 0;
 
         public Dictionary<int, PlayerController> PlayerDictionary => playerDictionary;
 
         public void CreatePlayer()
         {
-            int index = playerDictionary.Count;
-            PlayerController playerController = Instantiate(playerControllerPrefab, playersTransform);
-            Player player = AppModel.Instance.GetPlayerByIndex(index);
+            var index = playerDictionary.Count;
+            var playerController = Instantiate(playerControllerPrefab, playersTransform);
+            var player = AppModel.Instance.GetPlayerByIndex(index);
             playerController.SetPlayer(player);
             playerController.transform.position = GetRandomPlayerPosition();
             playerDictionary.Add(index, playerController);
 
-            if (currentPlayerController == null) {
-                currentPlayerController = playerDictionary.Values.First();
+            if (CurrentPlayerController == null) {
+                CurrentPlayerController = playerDictionary.Values.First();
             }
         }
 
         public void UpdatePlayerFromState(int index, PlayerFormat playerFormat)
         {
-            PlayerController playerController = playerDictionary[index];
-            Player player = AppModel.Instance.GetPlayerByIndex(index);
+            var playerController = playerDictionary[index];
+            var player = AppModel.Instance.GetPlayerByIndex(index);
             playerController.transform.position = playerFormat.position;
             player.Health = playerFormat.health;
         }
 
         public void RemovePlayers()
         {
-            foreach (PlayerController playerController in playerDictionary.Values) {
+            foreach (var playerController in playerDictionary.Values) {
                 Destroy(playerController.gameObject);
             }
 
-            foreach (PlayerController playerController in removePlayerDictionary.Values) {
+            foreach (var playerController in removePlayerDictionary.Values) {
                 Destroy(playerController.gameObject);
             }
 
@@ -77,7 +66,7 @@ namespace SurviveStayAlive
 
         public void ResetCurrentPlayerController()
         {
-            currentPlayerController = null;
+            CurrentPlayerController = null;
         }
 
         public void SetNextCurrentPlayer()
@@ -85,9 +74,9 @@ namespace SurviveStayAlive
             if (playerDictionary.Count < 1)
                 return;
 
-            if (currentPlayerController == null) {
+            if (CurrentPlayerController == null) {
                 if (playerDictionary.Count > 0) {
-                    currentPlayerController = playerDictionary.Values.First();
+                    CurrentPlayerController = playerDictionary.Values.First();
                     
                     UpdateCurrentPlayerColors();
 
@@ -95,9 +84,9 @@ namespace SurviveStayAlive
                 }
             }
 
-            int currentPlayerIndex = playerDictionary.Where(playePair => playePair.Value == currentPlayerController)
-                    .Select(playePair => playePair.Key)
-                    .FirstOrDefault();
+            int currentPlayerIndex = playerDictionary.Where(playePair => playePair.Value == CurrentPlayerController)
+                .Select(playePair => playePair.Key)
+                .FirstOrDefault();
 
             int nextPlayerIndex;
             if (currentPlayerIndex >= playerDictionary.Count - 1) {
@@ -109,7 +98,7 @@ namespace SurviveStayAlive
             if (!playerDictionary.ContainsKey(nextPlayerIndex))
                 return;
 
-            currentPlayerController = playerDictionary[nextPlayerIndex];
+            CurrentPlayerController = playerDictionary[nextPlayerIndex];
 
             UpdateCurrentPlayerColors();
         }
@@ -117,8 +106,8 @@ namespace SurviveStayAlive
         private void UpdateCurrentPlayerColors()
         {
             foreach (var playerPair in playerDictionary) {
-                PlayerController player = playerPair.Value;
-                bool isCurrentPlayer = player.Equals(currentPlayerController);
+                var player = playerPair.Value;
+                var isCurrentPlayer = player.Equals(CurrentPlayerController);
                 player.SetPlayerActive(isCurrentPlayer);
                 player.Player.OnSetActive(isCurrentPlayer);
             }
@@ -135,9 +124,9 @@ namespace SurviveStayAlive
 
         private Vector3 GetRandomPlayerPosition()
         {
-            float randomXPosition = GetRandomStartPosition();
-            float randomZPosition = GetRandomStartPosition();
-            Vector3 randomPosition = new Vector3(randomXPosition, 0.5f, randomZPosition);
+            var randomXPosition = GetRandomStartPosition();
+            var randomZPosition = GetRandomStartPosition();
+            var randomPosition = new Vector3(randomXPosition, 0.5f, randomZPosition);
 
             return randomPosition;
         }

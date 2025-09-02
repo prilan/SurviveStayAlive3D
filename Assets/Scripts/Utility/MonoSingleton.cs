@@ -2,8 +2,6 @@
 
 namespace Utility
 {
-    using UnityEngine;
-
     public class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
     {
         private static T instance;
@@ -17,7 +15,7 @@ namespace Utility
                 instance = FindObjectOfType(typeof(T)) as T;
                 if (instance != null) return instance;
 
-                GameObject gameObject = new GameObject(typeof(T).Name);
+                var gameObject = new GameObject(typeof(T).Name);
                 DontDestroyOnLoad(gameObject);
 
                 instance = gameObject.AddComponent(typeof(T)) as T;

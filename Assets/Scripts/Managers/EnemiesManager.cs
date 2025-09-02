@@ -1,10 +1,7 @@
-﻿using DataModel;
-using Enemies;
-using Players;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using DataModel;
+using Enemies;
 using UnityEngine;
 using Utility;
 using Random = System.Random;
@@ -13,20 +10,20 @@ namespace SurviveStayAlive
 {
     public class EnemiesManager : MonoSingleton<EnemiesManager>
     {
-        [SerializeField] EnemyController enemyControllerPrefab;
-        [SerializeField] Transform enemiesTransform;
+        [SerializeField] private EnemyController enemyControllerPrefab;
+        [SerializeField] private Transform enemiesTransform;
 
-        private Dictionary<int, EnemyController> enemyDictionary = new Dictionary<int, EnemyController>();
+        private readonly Dictionary<int, EnemyController> enemyDictionary = new();
 
-        private Random random = new Random();
+        private readonly Random random = new();
 
         public Dictionary<int, EnemyController> Enemies => enemyDictionary;
 
         public void CreateEnemy()
         {
-            int index = enemyDictionary.Count;
-            EnemyController enemyController = Instantiate(enemyControllerPrefab, enemiesTransform);
-            AbstractEnemy enemy = AppModel.Instance.GetEnemyByIndex(index);
+            var index = enemyDictionary.Count;
+            var enemyController = Instantiate(enemyControllerPrefab, enemiesTransform);
+            var enemy = AppModel.Instance.GetEnemyByIndex(index);
             enemyController.SetEnemy(enemy);
             enemyController.AddListener();
             enemyController.SetStartPosition(GetRandomEnemyPosition());
@@ -35,8 +32,8 @@ namespace SurviveStayAlive
 
         public void UpdateEnemyFromState(int index, EnemyFormat enemyFormat)
         {
-            EnemyController enemyController = enemyDictionary[index];
-            AbstractEnemy enemy = AppModel.Instance.GetEnemyByIndex(index);
+            var enemyController = enemyDictionary[index];
+            var enemy = AppModel.Instance.GetEnemyByIndex(index);
             enemy.EnemyType = EnemyUtility.GetEnumValueFromDescription<EnemyType>(enemyFormat.enemyType);
             enemyController.SetEnemy(enemy);
             enemyController.SetStartPosition(enemyFormat.position);
@@ -61,9 +58,9 @@ namespace SurviveStayAlive
 
         private Vector3 GetRandomEnemyPosition()
         {
-            float randomXPosition = GetRandomStartPosition();
-            float randomZPosition = GetRandomStartPosition();
-            Vector3 randomPosition = new Vector3(randomXPosition, 0.5f, randomZPosition);
+            var randomXPosition = GetRandomStartPosition();
+            var randomZPosition = GetRandomStartPosition();
+            var randomPosition = new Vector3(randomXPosition, 0.5f, randomZPosition);
 
             return randomPosition;
         }

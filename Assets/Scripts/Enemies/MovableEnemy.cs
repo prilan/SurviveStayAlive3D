@@ -1,10 +1,6 @@
-﻿using Enemies;
-using Factories;
+﻿using Factories.EnemyFactories;
 using Players;
 using SurviveStayAlive;
-using System;
-using System.Collections.Generic;
-using Factories.EnemyFactories;
 using UnityEngine;
 using Utility;
 
@@ -37,8 +33,8 @@ namespace Enemies
         private void CheckPlayerNear(Transform transform)
         {
             foreach (var playerPair in PlayersManager.Instance.PlayerDictionary) {
-                PlayerController playerController = playerPair.Value;
-                float distanceToPlayer = Vector3.Distance(playerController.transform.position, transform.position);
+                var playerController = playerPair.Value;
+                var distanceToPlayer = Vector3.Distance(playerController.transform.position, transform.position);
                 if (distanceToPlayer < CommonUtility.MINIMAL_DISTANCE_TO_PLAYER) {
                     Attack(playerController.Player);
                 }

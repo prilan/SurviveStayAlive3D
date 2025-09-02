@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Factories.PlayerFactories
+﻿namespace Factories.PlayerFactories
 {
     public abstract class PlayerFactory
     {

@@ -1,28 +1,22 @@
-﻿using SaveState;
-using SaveSystem;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
+using SaveState;
 using UnityEngine;
 
 namespace SaveSystem
 {
     public class JsonSaveSystem : ISaveSystem
     {
-        private string GetFleName(int slot)
+        private static string GetFleName(int slot)
         {
             return "save_" + slot;
         }
 
-        private string GetSavePath(int slot)
+        private static string GetSavePath(int slot)
         {
             return Path.Combine(Application.dataPath, "Resources", GetLocalSavePath(slot));
         }
 
-        private string GetLocalSavePath(int slot)
+        private static string GetLocalSavePath(int slot)
         {
             return Path.Combine(GetFleName(slot) + ".json");
         }
@@ -34,8 +28,8 @@ namespace SaveSystem
 
         public SaveDataState LoadDataState(int slot)
         {
-            TextAsset textAsset = Resources.Load<TextAsset>(GetFleName(slot));
-            SaveDataState saveDataState = JsonUtility.FromJson<SaveDataState>(textAsset.text);
+            var textAsset = Resources.Load<TextAsset>(GetFleName(slot));
+            var saveDataState = JsonUtility.FromJson<SaveDataState>(textAsset.text);
 
             return saveDataState;
         }

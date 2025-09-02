@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Enemies
 {
@@ -25,9 +21,9 @@ namespace Enemies
             MemberInfo[] fis = typeof(T).GetFields();
 
             foreach (var fi in fis) {
-                DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
+                var attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
 
-                if (attributes != null && attributes.Length > 0 && attributes[0].Description == description)
+                if (attributes.Length > 0 && attributes[0].Description == description)
                     return (T)Enum.Parse(typeof(T), fi.Name);
             }
 

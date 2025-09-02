@@ -1,9 +1,4 @@
-﻿using DataModel;
-using EventEmitter;
-using SaveState;
-using SurviveStayAlive;
-using System;
-using System.Reflection;
+﻿using EventEmitter;
 using UnityEngine;
 
 namespace SurviveStayAlive
@@ -25,7 +20,9 @@ namespace SurviveStayAlive
 
         private void Update()
         {
-            if (PlayersManager.Instance.IsActivePlayersEmpty && AppModel.Instance.LogicState.CurrentLogicState == LogicStateEnum.PlayState) {
+            if (PlayersManager.Instance.IsActivePlayersEmpty &&
+                AppModel.Instance.LogicState.CurrentLogicState == LogicStateEnum.PlayState)
+            {
                 AppModel.Instance.LogicState.ChangeState(LogicStateEnum.PauseState);
             }
         }
@@ -48,14 +45,14 @@ namespace SurviveStayAlive
             AppModel.Instance.CreatePlayers();
             AppModel.Instance.CreateEnemies();
 
-            int playerCount = AppModel.Instance.CurrentLevel.playerCount;
-            int enemyCount = AppModel.Instance.CurrentLevel.enemyCount;
+            var playerCount = AppModel.Instance.CurrentLevel.playerCount;
+            var enemyCount = AppModel.Instance.CurrentLevel.enemyCount;
 
-            for (int index = 0; index < playerCount; index++) {
+            for (var index = 0; index < playerCount; index++) {
                 PlayersManager.Instance.CreatePlayer();
             }
 
-            for (int index = 0; index < enemyCount; index++) {
+            for (var index = 0; index < enemyCount; index++) {
                 EnemiesManager.Instance.CreateEnemy();
             }
         }
@@ -92,16 +89,16 @@ namespace SurviveStayAlive
 
             CreatePlayersAndEnemies();
 
-            int playerCount = AppModel.Instance.CurrentLevel.playerCount;
-            int enemyCount = AppModel.Instance.CurrentLevel.enemyCount;
+            var playerCount = AppModel.Instance.CurrentLevel.playerCount;
+            var enemyCount = AppModel.Instance.CurrentLevel.enemyCount;
 
-            SaveDataFormat saveDataFormat = AppModel.Instance.SaveDataState.SaveData;
+            var saveDataFormat = AppModel.Instance.SaveDataState.SaveData;
 
-            for (int index = 0; index < playerCount; index++) {
+            for (var index = 0; index < playerCount; index++) {
                 PlayersManager.Instance.UpdatePlayerFromState(index, saveDataFormat.players[index]);
             }
 
-            for (int index = 0; index < enemyCount; index++) {
+            for (var index = 0; index < enemyCount; index++) {
                 EnemiesManager.Instance.UpdateEnemyFromState(index, saveDataFormat.enemies[index]);
             }
 

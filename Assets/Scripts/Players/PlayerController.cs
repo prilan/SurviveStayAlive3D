@@ -1,18 +1,17 @@
-﻿using EventEmitter;
+﻿using System.Linq;
+using EventEmitter;
 using SurviveStayAlive;
-using System;
-using System.Linq;
 using UnityEngine;
 
 namespace Players
 {
     public class PlayerController : MonoBehaviour
     {
-        [SerializeField] Color defaultColor = Color.white;
-        [SerializeField] Color activeColor = Color.blue;
-        [SerializeField] Color finishedColor = Color.green;
+        [SerializeField] private Color defaultColor = Color.white;
+        [SerializeField] private Color activeColor = Color.blue;
+        [SerializeField] private Color finishedColor = Color.green;
 
-        [SerializeField] float backShiftPositionvalue = 1f;
+        [SerializeField] private float backShiftPositionValue = 1f;
 
         [Header("Visualization")]
         [SerializeField] int Health;
@@ -21,7 +20,7 @@ namespace Players
 
         private MeshRenderer meshRenderer;
         
-        private float sensitivityKoefficient = 0.001f;
+        private readonly float sensitivityKoefficient = 0.001f;
         private float sensitivityShiftPerPress;
 
         private Vector3 force = Vector3.zero;
@@ -53,22 +52,22 @@ namespace Players
         private void ProcessKeyPress()
         {
             if (Input.GetKey("w") || Input.GetKey(KeyCode.UpArrow)) {
-                Vector3 newPosition = transform.position;
+                var newPosition = transform.position;
                 newPosition.z += sensitivityShiftPerPress;
                 transform.position = newPosition;
             }
             if (Input.GetKey("a") || Input.GetKey(KeyCode.LeftArrow)) {
-                Vector3 newPosition = transform.position;
+                var newPosition = transform.position;
                 newPosition.x -= sensitivityShiftPerPress;
                 transform.position = newPosition;
             }
             if (Input.GetKey("s") || Input.GetKey(KeyCode.DownArrow)) {
-                Vector3 newPosition = transform.position;
+                var newPosition = transform.position;
                 newPosition.z -= sensitivityShiftPerPress;
                 transform.position = newPosition;
             }
             if (Input.GetKey("d") || Input.GetKey(KeyCode.RightArrow)) {
-                Vector3 newPosition = transform.position;
+                var newPosition = transform.position;
                 newPosition.x += sensitivityShiftPerPress;
                 transform.position = newPosition;
             }
@@ -82,10 +81,10 @@ namespace Players
 
         private void ProcessInExitArea()
         {
-            int EXIT_AREA_LAYER_ID = 6;
-            int exitAreaLayerMask = (1 << EXIT_AREA_LAYER_ID);
+            const int EXIT_AREA_LAYER_ID = 6;
+            const int exitAreaLayerMask = (1 << EXIT_AREA_LAYER_ID);
 
-            bool isInExitArea = Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down), out RaycastHit hit, Mathf.Infinity, exitAreaLayerMask);
+            var isInExitArea = Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down), out RaycastHit hit, Mathf.Infinity, exitAreaLayerMask);
 
             if (isInExitArea) {
                 SetPlayerReachedGoal();
@@ -95,7 +94,7 @@ namespace Players
 
         private void CheckWinState()
         {
-            bool isWin = !PlayersManager.Instance.Players.Any();
+            var isWin = !PlayersManager.Instance.Players.Any();
             if (isWin) {
                 AppModel.Instance.LogicState.ChangeState(LogicStateEnum.WinState);
                 GameEventEmitter.OnWinLevel();
@@ -123,10 +122,10 @@ namespace Players
 
         private void ProcessOnLevelSurface()
         {
-            int LEVEL_SURFACE_LAYER_ID = 3;
-            int surfaceLayerMask = (1 << LEVEL_SURFACE_LAYER_ID);
+            const int LEVEL_SURFACE_LAYER_ID = 3;
+            const int surfaceLayerMask = (1 << LEVEL_SURFACE_LAYER_ID);
 
-            bool isOnLevelSurface = Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down), out RaycastHit hit, Mathf.Infinity, surfaceLayerMask);
+            var isOnLevelSurface = Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down), out RaycastHit hit, Mathf.Infinity, surfaceLayerMask);
 
             if (!isOnLevelSurface) {
                 SetPositionBack();
@@ -135,18 +134,18 @@ namespace Players
 
         private void SetPositionBack()
         {
-            Vector3 position = meshRenderer.transform.position;
+            var position = meshRenderer.transform.position;
 
             if (position.x > 0) {
-                position.x -= backShiftPositionvalue;
+                position.x -= backShiftPositionValue;
             } else { 
-                position.x += backShiftPositionvalue;
+                position.x += backShiftPositionValue;
             }
 
             if (position.z > 0) {
-                position.z -= backShiftPositionvalue;
+                position.z -= backShiftPositionValue;
             } else {
-                position.z += backShiftPositionvalue;
+                position.z += backShiftPositionValue;
             }
 
             meshRenderer.transform.position = position;

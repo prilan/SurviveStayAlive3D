@@ -1,9 +1,6 @@
-﻿using Enemies;
-using Factories;
+﻿using Factories.EnemyFactories;
 using Players;
 using SurviveStayAlive;
-using System;
-using Factories.EnemyFactories;
 using UnityEngine;
 
 namespace Enemies
@@ -15,7 +12,7 @@ namespace Enemies
         private Vector3 currentPosition;
         private PlayerController attackedPlayer;
 
-        private float timeCounter = 0;
+        private float timeCounter;
 
         private const float RELOAD_TIME_SEC = 5f;
 
@@ -37,8 +34,8 @@ namespace Enemies
                 return;
 
             foreach (var playerPair in PlayersManager.Instance.PlayerDictionary) {
-                PlayerController playerController = playerPair.Value;
-                float distanceToPlayer = Vector3.Distance(playerController.transform.position, transform.position);
+                var playerController = playerPair.Value;
+                var distanceToPlayer = Vector3.Distance(playerController.transform.position, transform.position);
                 if (distanceToPlayer < Distance) {
                     currentPosition = transform.position;
                     attackedPlayer = playerController;
@@ -67,7 +64,7 @@ namespace Enemies
 
         public override void Attack(Player player)
         {
-            ShellsManager.Instance.LauchShell(Damage, currentPosition, attackedPlayer.transform.position);
+            ShellsManager.Instance.LaunchShell(Damage, currentPosition, attackedPlayer.transform.position);
         }
     }
 }

@@ -7,6 +7,6 @@ namespace SaveState
     [Serializable]
     public class SaveDataState : ICanSave<SaveDataState>
     {
-        public SaveDataFormat SaveData = new SaveDataFormat();
+        public SaveDataFormat SaveData = new();
     }
 }

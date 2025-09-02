@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
-
-namespace SurviveStayAlive
+﻿namespace SurviveStayAlive
 {
     public enum LogicStateEnum
     {
@@ -13,12 +10,7 @@ namespace SurviveStayAlive
 
     public class LogicState
     {
-        private LogicStateEnum currentLogicState;
-
-        public LogicStateEnum CurrentLogicState
-        {
-            get { return currentLogicState; }
-        }
+        public LogicStateEnum CurrentLogicState { get; private set; }
 
         public LogicState(LogicStateEnum logicStateValue)
         {
@@ -27,8 +19,7 @@ namespace SurviveStayAlive
 
         public void ChangeState(LogicStateEnum logicStateValue)
         {
-
-            currentLogicState = logicStateValue;
+            CurrentLogicState = logicStateValue;
 
             if (logicStateValue == LogicStateEnum.WinState) {
                 // TODO
@@ -37,9 +28,9 @@ namespace SurviveStayAlive
 
         public void PauseUnPauseGame()
         {
-            if (currentLogicState == LogicStateEnum.PlayState) {
+            if (CurrentLogicState == LogicStateEnum.PlayState) {
                 ChangeState(LogicStateEnum.PauseState);
-            } else if (currentLogicState == LogicStateEnum.PauseState) {
+            } else if (CurrentLogicState == LogicStateEnum.PauseState) {
                 ChangeState(LogicStateEnum.PlayState);
             }
         }

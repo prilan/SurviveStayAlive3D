@@ -1,6 +1,4 @@
-﻿using Factories;
-using System;
-using Factories.PlayerFactories;
+﻿using Factories.PlayerFactories;
 
 namespace Players
 {

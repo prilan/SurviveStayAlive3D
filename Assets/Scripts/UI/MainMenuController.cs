@@ -1,10 +1,9 @@
-﻿using EventEmitter;
-using Players;
-using SaveSystem;
-using SurviveStayAlive;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using EventEmitter;
+using Players;
+using SaveSystem;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -28,11 +27,11 @@ namespace SurviveStayAlive
 
         private int CurrentSlot = 1;
 
-        private Dictionary<int, PlayerHealth> playerHealthDictionary = new Dictionary<int, PlayerHealth>();
+        private readonly Dictionary<int, PlayerHealth> playerHealthDictionary = new();
 
-        private string pauseText = "PAUSE";
-        private string winText = "YOU WIN";
-        private string loseText = "YOU FAIL";
+        private const string pauseText = "PAUSE";
+        private const string winText = "YOU WIN";
+        private const string loseText = "YOU FAIL";
 
         private void Awake()
         {
@@ -64,9 +63,9 @@ namespace SurviveStayAlive
         private void OnPlayersInited()
         {
             foreach (var playerItem in AppModel.Instance.PlayerDictionary) {
-                int playerIndex = playerItem.Key;
-                Player player = playerItem.Value;
-                PlayerHealth playerHealth = Instantiate(playerHealthPrefab, playerHealthGridTransform);
+                var playerIndex = playerItem.Key;
+                var player = playerItem.Value;
+                var playerHealth = Instantiate(playerHealthPrefab, playerHealthGridTransform);
                 playerHealth.Init(playerIndex, player);
                 playerHealthDictionary[playerIndex] = playerHealth;
             }
@@ -139,21 +138,21 @@ namespace SurviveStayAlive
 
         private bool IsSlotCorrect(string slotValue)
         {
-            bool isNumber = Int32.TryParse(slotValue, out int intValue);
+            var isNumber = int.TryParse(slotValue, out var intValue);
             if (!isNumber) {
                 CurrentSlot = -1;
                 return false;
-            } else {
-                if (intValue < 1 || intValue > 3) {
-                    slotInputField.text = string.Empty;
-                    CurrentSlot = -1;
-                    return false;
-                } else {
-                    // Правильное значение 1, 2 или 3
-                    CurrentSlot = intValue;
-                    return true;
-                }
             }
+
+            if (intValue is < 1 or > 3) {
+                slotInputField.text = string.Empty;
+                CurrentSlot = -1;
+                return false;
+            }
+
+            // Правильное значение 1, 2 или 3
+            CurrentSlot = intValue;
+            return true;
         }
 
 

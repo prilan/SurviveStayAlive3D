@@ -1,10 +1,4 @@
 ﻿using SaveState;
-using SaveSystem;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace SaveSystem
@@ -20,8 +14,8 @@ namespace SaveSystem
 
         public SaveDataState LoadDataState(int slot)
         {
-            string dataString = PlayerPrefs.GetString(SAVE_DATA_KEY + slot);
-            SaveDataState saveDataState = new SaveDataState();
+            var dataString = PlayerPrefs.GetString(SAVE_DATA_KEY + slot);
+            var saveDataState = new SaveDataState();
             saveDataState = saveDataState.FromSaveGame(dataString);
 
             return saveDataState;

@@ -1,12 +1,8 @@
 ﻿using DataModel;
 using Enemies;
-using Factories;
 using Players;
 using SaveState;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Factories.EnemyFactories;
 using Factories.PlayerFactories;
@@ -18,20 +14,16 @@ namespace SurviveStayAlive
     public class AppModel : AbstractSingleton<AppModel>
     {
         public GameConfiguration GameConfiguration;
-        public LevelsListFormat levelsListConfig;
-
         public LevelFormat CurrentLevel;
-        public int CurrentLevelIndex;
-
-        public SaveDataState SaveDataState = new SaveDataState();
-
-        private Dictionary<int, Player> playerDictionary = new Dictionary<int, Player>();
-        private Dictionary<int, AbstractEnemy> enemyDictionary = new Dictionary<int, AbstractEnemy>();
-
-        public Dictionary<int, Player> PlayerDictionary => playerDictionary;
-        public Dictionary<int, AbstractEnemy> EnemyDictionary => enemyDictionary;
-
+        public SaveDataState SaveDataState = new();
         public LogicState LogicState;
+
+        public Dictionary<int, Player> PlayerDictionary { get; } = new();
+
+        private Dictionary<int, AbstractEnemy> EnemyDictionary { get; } = new();
+
+        private LevelsListFormat levelsListConfig;
+        private int CurrentLevelIndex;
 
         public void Init(LogicState logicState)
         {
@@ -40,69 +32,69 @@ namespace SurviveStayAlive
 
         public void CreatePlayers()
         {
-            playerDictionary.Clear();
+            PlayerDictionary.Clear();
 
-            for (int index = 0; index < AppModel.Instance.CurrentLevel.playerCount; index++) {
+            for (var index = 0; index < Instance.CurrentLevel.playerCount; index++) {
                 Player player = new BasePlayer(new BasePlayerFactory());
-                playerDictionary.Add(index, player);
+                PlayerDictionary.Add(index, player);
             }
         }
 
         public void CreateEnemies()
         {
-            enemyDictionary.Clear();
+            EnemyDictionary.Clear();
 
-            int enemyCount = AppModel.Instance.CurrentLevel.enemyCount;
-            int enemyIndex = 0;
+            var enemyCount = Instance.CurrentLevel.enemyCount;
+            var enemyIndex = 0;
 
-            // Один враг двигающийся по своей траектории
-            MovingRoundEnemy movableEnemy = new MovingRoundEnemy(new MovableEnemyFactory());
-            enemyDictionary.Add(enemyIndex, movableEnemy);
+            // Один враг, двигающийся по кругу
+            var movableEnemy = new MovingRoundEnemy(new MovableEnemyFactory());
+            EnemyDictionary.Add(enemyIndex, movableEnemy);
             enemyIndex++;
 
-            // Один враг, преследующий объект игрока
-            StalkingEnemy stalkingEnemy = new StalkingEnemy(new StalkingEnemyFactory());
-            enemyDictionary.Add(enemyIndex, stalkingEnemy);
+            // Один враг, преследующий игрока
+            var stalkingEnemy = new StalkingEnemy(new StalkingEnemyFactory());
+            EnemyDictionary.Add(enemyIndex, stalkingEnemy);
             enemyIndex++;
 
             if (enemyCount <= 2)
                 return;
 
             // Если врагов более 2, то все остальные враги стреляющие
-            for (int index = enemyDictionary.Count; index < enemyCount; index++) {
-                ShootingEnemy shootingEnemy = new ShootingEnemy(new ShootingEnemyFactory());
-                enemyDictionary.Add(index, shootingEnemy);
+            for (var index = EnemyDictionary.Count; index < enemyCount; index++) {
+                var shootingEnemy = new ShootingEnemy(new ShootingEnemyFactory());
+                EnemyDictionary.Add(index, shootingEnemy);
             }
         }
 
         public void RemovePlayersAndEnemies()
         {
-            playerDictionary.Clear();
-            enemyDictionary.Clear();
+            PlayerDictionary.Clear();
+            EnemyDictionary.Clear();
         }
 
         public Player GetPlayerByIndex(int index)
         {
-            Player player = playerDictionary[index];
+            var player = PlayerDictionary[index];
             return player;
         }
 
         public AbstractEnemy GetEnemyByIndex(int index)
         {
-            AbstractEnemy enemy = enemyDictionary[index];
+            var enemy = EnemyDictionary[index];
             return enemy;
         }
 
         public void RemovePlayerFromActivePlayers(Player player)
         {
-            var playerItem = playerDictionary.First(playerPair => playerPair.Value == player);
+            var playerItem = PlayerDictionary.First(playerPair => playerPair.Value == player);
 
-            playerDictionary.Remove(playerItem.Key);
+            PlayerDictionary.Remove(playerItem.Key);
         }
 
         public void LoadLevelsConfig()
         {
-            TextAsset textAsset = Resources.Load<TextAsset>("config");
+            var textAsset = Resources.Load<TextAsset>("config");
             if (textAsset == null)
                 return;
 
@@ -134,13 +126,13 @@ namespace SurviveStayAlive
 
             SaveDataState.SaveData.players = new List<PlayerFormat>();
 
-            for (int index = 0; index < CurrentLevel.playerCount; index++) {
+            for (var index = 0; index < CurrentLevel.playerCount; index++) {
                 if (index >= PlayersManager.Instance.Players.Count)
                     continue;
 
-                PlayerController playerController = PlayersManager.Instance.Players.Values.ElementAt(index);
+                var playerController = PlayersManager.Instance.Players.Values.ElementAt(index);
 
-                PlayerFormat player = new PlayerFormat();
+                var player = new PlayerFormat();
 
                 player.health = playerController.Player.Health;
                 player.position = playerController.transform.position;
@@ -150,13 +142,13 @@ namespace SurviveStayAlive
 
             SaveDataState.SaveData.enemies = new List<EnemyFormat>();
 
-            for (int index = 0; index < CurrentLevel.enemyCount; index++) {
+            for (var index = 0; index < CurrentLevel.enemyCount; index++) {
                 if (index >= EnemiesManager.Instance.Enemies.Count)
                     continue;
 
-                EnemyController enemyController = EnemiesManager.Instance.Enemies.Values.ElementAt(index);
+                var enemyController = EnemiesManager.Instance.Enemies.Values.ElementAt(index);
 
-                EnemyFormat enemy = new EnemyFormat();
+                var enemy = new EnemyFormat();
 
                 enemy.enemyType = enemyController.Enemy.EnemyType.ToString();
                 enemy.position = enemyController.StartPosition;

@@ -1,5 +1,3 @@
-using SaveState;
-using UnityEngine;
 using Utility;
 
 namespace SaveSystem
@@ -8,7 +6,7 @@ namespace SaveSystem
     {
         public ISaveSystem SaveSystem => SaveSystemManager.SaveSystem;
 
-        public SaveSystemManager SaveSystemManager { get; private set; } = new SaveSystemManager(new PlayerPrefsSaveSystem());
+        private SaveSystemManager SaveSystemManager { get; set; } = new SaveSystemManager(new PlayerPrefsSaveSystem());
 
         public void ChangeSaveSystem(ISaveSystem saveSystem)
         {

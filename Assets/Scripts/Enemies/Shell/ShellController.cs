@@ -1,9 +1,6 @@
 ﻿using Players;
 using SurviveStayAlive;
-using System;
-using System.Collections;
 using UnityEngine;
-using UnityEngine.UIElements;
 using Utility;
 
 namespace Enemies.Shell
@@ -17,11 +14,6 @@ namespace Enemies.Shell
         private const float TIME_ALIVE_SEC = 10f;
 
         private float timerAlive = 0;
-
-        private void Start()
-        {
-
-        }
 
         private void Update()
         {
@@ -47,11 +39,11 @@ namespace Enemies.Shell
 
         private void ShellMove()
         {
-            Vector3 position = transform.position;
+            var position = transform.position;
 
-            float x = position.x + moveVector.x;
-            float y = transform.position.y;
-            float z = position.z + moveVector.z;
+            var x = position.x + moveVector.x;
+            var y = transform.position.y;
+            var z = position.z + moveVector.z;
 
             transform.position = new Vector3(x, y, z);
         }

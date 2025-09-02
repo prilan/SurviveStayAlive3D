@@ -1,7 +1,6 @@
-﻿using Factories;
-using Players;
-using System;
+﻿using System;
 using Factories.EnemyFactories;
+using Players;
 using UnityEngine;
 
 namespace Enemies

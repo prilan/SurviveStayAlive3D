@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Enemies
+﻿namespace Enemies
 {
     public interface IEnemyStalking : IEnemyMovable
     {
