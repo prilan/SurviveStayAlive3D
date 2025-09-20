@@ -7,5 +7,6 @@ namespace Enemies
         int Speed { get; }
 
         void Move(Transform transform);
+        void Move(Transform transform, Vector3 moveTo);
     }
 }

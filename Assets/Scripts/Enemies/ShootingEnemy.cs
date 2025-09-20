@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Enemies
 {
-    public class ShootingEnemy : AbstractEnemy, IEnemyDistant
+    public class ShootingEnemy : AbstractEnemy, IEnemyShooting, IEnemyDistant
     {
         public int Distance { get; }
 

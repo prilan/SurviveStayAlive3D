@@ -22,7 +22,7 @@ namespace Enemies
             StalkingToPlayer(transform, playerController);
         }
 
-        private void StalkingToPlayer(Transform transform, PlayerController playerController)
+        private void StalkingToPlayer(Transform transform, Component playerController)
         {
             var speedDelta = Time.deltaTime * Speed * 0.2f;
 
@@ -43,7 +43,8 @@ namespace Enemies
             var x = position.x + deltaX;
             var y = transform.position.y;
             var z = position.z + deltaZ;
-            transform.position = new Vector3(x, y, z);
+
+            Move(transform, new Vector3(x, y, z));
         }
     }
 }

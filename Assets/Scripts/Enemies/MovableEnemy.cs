@@ -53,5 +53,10 @@ namespace Enemies
         public virtual void Move(Transform transform)
         {
         }
+
+        public virtual void Move(Transform transform, Vector3 moveTo)
+        {
+            transform.position = moveTo;            
+        }
     }
 }

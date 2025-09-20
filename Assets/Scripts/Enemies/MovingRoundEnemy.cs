@@ -18,7 +18,8 @@ namespace Enemies
             var x = StartPosition.x + 4 * Mathf.Cos(timeCounter);
             var y = transform.position.y;
             var z = StartPosition.z - 4 * Mathf.Sin(timeCounter);
-            transform.position = new Vector3(x, y, z);
+            
+            Move(transform, new Vector3(x, y, z));
         }
     }
 }
