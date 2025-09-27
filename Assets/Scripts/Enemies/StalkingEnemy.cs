@@ -1,7 +1,9 @@
 ﻿using System;
 using Factories.EnemyFactories;
 using Players;
+using SurviveStayAlive;
 using UnityEngine;
+using Utility;
 
 namespace Enemies
 {
@@ -15,11 +17,32 @@ namespace Enemies
             EnemyType = EnemyType.Stalking;
         }
 
-        protected override void ActionWhenNear(Transform transform, PlayerController playerController)
+        public override void UpdateAction(Transform transform, Vector3 startPosition)
         {
-            base.ActionWhenNear(transform, playerController);
+            base.UpdateAction(transform, startPosition);
             
+            CheckPlayerNear(transform);
+        }
+
+        public virtual void ActionWhenNear(Transform transform, PlayerController playerController)
+        {
             StalkingToPlayer(transform, playerController);
+        }
+
+        private void CheckPlayerNear(Transform transform)
+        {
+            foreach (var playerPair in PlayersManager.Instance.PlayerDictionary) {
+                var playerController = playerPair.Value;
+                var distanceToPlayer = Vector3.Distance(playerController.transform.position, transform.position);
+                if (distanceToPlayer < CommonUtility.MINIMAL_DISTANCE_TO_PLAYER) {
+                    Attack(playerController.Player);
+                }
+
+                if (distanceToPlayer < Distance)
+                {
+                    ActionWhenNear(transform, playerController);
+                }
+            }
         }
 
         private void StalkingToPlayer(Transform transform, Component playerController)

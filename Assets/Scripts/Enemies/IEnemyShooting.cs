@@ -1,6 +1,6 @@
 ﻿namespace Enemies
 {
-    public interface IEnemyShooting : IEnemyDistant
+    public interface IEnemyShooting
     {
         
     }

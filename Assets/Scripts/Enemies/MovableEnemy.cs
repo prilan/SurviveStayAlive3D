@@ -1,8 +1,6 @@
 ﻿using Factories.EnemyFactories;
 using Players;
-using SurviveStayAlive;
 using UnityEngine;
-using Utility;
 
 namespace Enemies
 {
@@ -23,24 +21,6 @@ namespace Enemies
             StartPosition = startPosition;
             
             Move(transform);
-            CheckPlayerNear(transform);
-        }
-
-        protected virtual void ActionWhenNear(Transform transform, PlayerController playerController)
-        {
-        }
-
-        private void CheckPlayerNear(Transform transform)
-        {
-            foreach (var playerPair in PlayersManager.Instance.PlayerDictionary) {
-                var playerController = playerPair.Value;
-                var distanceToPlayer = Vector3.Distance(playerController.transform.position, transform.position);
-                if (distanceToPlayer < CommonUtility.MINIMAL_DISTANCE_TO_PLAYER) {
-                    Attack(playerController.Player);
-                }
-                
-                ActionWhenNear(transform, playerController);
-            }
         }
 
         public override void Attack(Player player)

@@ -27,6 +27,13 @@ namespace Enemies
             CheckPlayerNear(transform);
         }
 
+        public virtual void ActionWhenNear(Transform transform, PlayerController playerController)
+        {
+            currentPosition = transform.position;
+            attackedPlayer = playerController;
+            Attack(playerController.Player);
+        }
+
         private void CheckPlayerNear(Transform transform)
         {
             ProcessShootingPause();
@@ -37,9 +44,8 @@ namespace Enemies
                 var playerController = playerPair.Value;
                 var distanceToPlayer = Vector3.Distance(playerController.transform.position, transform.position);
                 if (distanceToPlayer < Distance) {
-                    currentPosition = transform.position;
-                    attackedPlayer = playerController;
-                    Attack(playerController.Player);
+                    ActionWhenNear(transform, playerController);
+                    
                     StartShootingPause();
                 }
             }
