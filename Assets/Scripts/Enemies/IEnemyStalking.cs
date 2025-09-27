@@ -1,6 +1,6 @@
 ﻿namespace Enemies
 {
-    public interface IEnemyStalking : IEnemyMovable
+    public interface IEnemyStalking : IEnemyMovable, IEnemyDistant
     {
     }
 }

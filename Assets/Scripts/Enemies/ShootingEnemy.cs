@@ -9,6 +9,8 @@ namespace Enemies
     {
         public int Distance { get; }
 
+        private readonly DistantEnemyLogic DistantEnemyLogic;
+        
         private Vector3 currentPosition;
         private PlayerController attackedPlayer;
 
@@ -20,11 +22,22 @@ namespace Enemies
         {
             Distance = enemyFactory.Distance;
             EnemyType = EnemyType.Shooting;
+            
+            DistantEnemyLogic = enemyFactory.DistantEnemyLogic;
+            DistantEnemyLogic.Initialize(ActionWhenClose, ActionWhenNear);
         }
 
         public override void UpdateAction(Transform transform, Vector3 startPosition)
         {
-            CheckPlayerNear(transform);
+            ProcessShootingPause();
+            if (timeCounter > 0)
+                return;
+            
+            DistantEnemyLogic.CheckPlayerNear(transform);
+        }
+
+        public virtual void ActionWhenClose(PlayerController playerController)
+        {
         }
 
         public virtual void ActionWhenNear(Transform transform, PlayerController playerController)
@@ -32,23 +45,8 @@ namespace Enemies
             currentPosition = transform.position;
             attackedPlayer = playerController;
             Attack(playerController.Player);
-        }
-
-        private void CheckPlayerNear(Transform transform)
-        {
-            ProcessShootingPause();
-            if (timeCounter > 0)
-                return;
-
-            foreach (var playerPair in PlayersManager.Instance.PlayerDictionary) {
-                var playerController = playerPair.Value;
-                var distanceToPlayer = Vector3.Distance(playerController.transform.position, transform.position);
-                if (distanceToPlayer < Distance) {
-                    ActionWhenNear(transform, playerController);
-                    
-                    StartShootingPause();
-                }
-            }
+            
+            StartShootingPause();
         }
 
         private void ProcessShootingPause()

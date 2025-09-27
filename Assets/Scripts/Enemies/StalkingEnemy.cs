@@ -1,48 +1,40 @@
 ﻿using System;
 using Factories.EnemyFactories;
 using Players;
-using SurviveStayAlive;
 using UnityEngine;
-using Utility;
 
 namespace Enemies
 {
     public class StalkingEnemy : MovableEnemy, IEnemyDistant
     {
         public int Distance { get; }
+        
+        private readonly DistantEnemyLogic DistantEnemyLogic;
 
         public StalkingEnemy(StalkingEnemyFactory enemyFactory) : base(enemyFactory)
         {
             Distance = enemyFactory.Distance;
             EnemyType = EnemyType.Stalking;
+
+            DistantEnemyLogic = enemyFactory.DistantEnemyLogic;
+            DistantEnemyLogic.Initialize(ActionWhenClose, ActionWhenNear);
         }
 
         public override void UpdateAction(Transform transform, Vector3 startPosition)
         {
             base.UpdateAction(transform, startPosition);
             
-            CheckPlayerNear(transform);
+            DistantEnemyLogic.CheckPlayerNear(transform);
         }
 
+        public virtual void ActionWhenClose(PlayerController playerController)
+        {
+            Attack(playerController.Player);
+        }
+        
         public virtual void ActionWhenNear(Transform transform, PlayerController playerController)
         {
             StalkingToPlayer(transform, playerController);
-        }
-
-        private void CheckPlayerNear(Transform transform)
-        {
-            foreach (var playerPair in PlayersManager.Instance.PlayerDictionary) {
-                var playerController = playerPair.Value;
-                var distanceToPlayer = Vector3.Distance(playerController.transform.position, transform.position);
-                if (distanceToPlayer < CommonUtility.MINIMAL_DISTANCE_TO_PLAYER) {
-                    Attack(playerController.Player);
-                }
-
-                if (distanceToPlayer < Distance)
-                {
-                    ActionWhenNear(transform, playerController);
-                }
-            }
         }
 
         private void StalkingToPlayer(Transform transform, Component playerController)

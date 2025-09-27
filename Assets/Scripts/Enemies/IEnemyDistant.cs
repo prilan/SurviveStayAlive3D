@@ -7,6 +7,7 @@ namespace Enemies
     {
         int Distance { get; }
 
+        void ActionWhenClose(PlayerController playerController);
         void ActionWhenNear(Transform transform, PlayerController playerController);
     }
 }
