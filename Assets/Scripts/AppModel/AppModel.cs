@@ -13,6 +13,8 @@ namespace SurviveStayAlive
 {
     public class AppModel : AbstractSingleton<AppModel>
     {
+        private const int NON_SHOOTING_MAX_PLAYER_COUNT = 2;
+
         public GameConfiguration GameConfiguration;
         public LevelFormat CurrentLevel;
         public SaveDataState SaveDataState = new();
@@ -57,10 +59,10 @@ namespace SurviveStayAlive
             EnemyDictionary.Add(enemyIndex, stalkingEnemy);
             enemyIndex++;
 
-            if (enemyCount <= 2)
+            if (enemyCount <= NON_SHOOTING_MAX_PLAYER_COUNT)
                 return;
 
-            // Если врагов более 2, то все остальные враги стреляющие
+            // Все остальные враги стреляющие
             for (var index = EnemyDictionary.Count; index < enemyCount; index++) {
                 var shootingEnemy = new ShootingEnemy(new ShootingEnemyFactory());
                 EnemyDictionary.Add(index, shootingEnemy);

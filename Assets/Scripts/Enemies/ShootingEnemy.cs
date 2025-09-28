@@ -9,6 +9,8 @@ namespace Enemies
 {
     public class ShootingEnemy : AbstractEnemy, IEnemyShooting, IEnemyDistant
     {
+        private const float RELOAD_TIME_SEC = 5f;
+        
         public int Distance { get; }
 
         private readonly DistantEnemyLogic DistantEnemyLogic;
@@ -17,8 +19,6 @@ namespace Enemies
         private PlayerController attackedPlayer;
 
         private float timeCounter;
-
-        private const float RELOAD_TIME_SEC = 5f;
 
         public ShootingEnemy(ShootingEnemyFactory enemyFactory) : base(enemyFactory)
         {

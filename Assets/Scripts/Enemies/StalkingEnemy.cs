@@ -9,6 +9,8 @@ namespace Enemies
 {
     public class StalkingEnemy : MovableEnemy, IEnemyDistant
     {
+        private const float SPEED_COEFFICIENT = 0.2f;
+
         public int Distance { get; }
         
         private readonly DistantEnemyLogic DistantEnemyLogic;
@@ -41,7 +43,7 @@ namespace Enemies
 
         private void StalkingToPlayer(Transform transform, Component playerController)
         {
-            var speedDelta = Time.deltaTime * Speed * 0.2f;
+            var speedDelta = Time.deltaTime * Speed * SPEED_COEFFICIENT;
 
             var position = transform.position;
             var playerPosition = playerController.transform.position;

@@ -10,6 +10,9 @@ namespace SurviveStayAlive
 {
     public class PlayersManager : MonoSingleton<PlayersManager>
     {
+        private const float START_PLAYER_POSITION_HEIGHT = 0.5f;
+        private const float MAX_START_POSITION_VALUE = 5;
+
         [SerializeField] private PlayerController playerControllerPrefab;
         [SerializeField] private Transform playersTransform;
 
@@ -84,8 +87,8 @@ namespace SurviveStayAlive
                 }
             }
 
-            int currentPlayerIndex = playerDictionary.Where(playePair => playePair.Value == CurrentPlayerController)
-                .Select(playePair => playePair.Key)
+            var currentPlayerIndex = playerDictionary.Where(playerPair => playerPair.Value == CurrentPlayerController)
+                .Select(playerPair => playerPair.Key)
                 .FirstOrDefault();
 
             int nextPlayerIndex;
@@ -126,14 +129,14 @@ namespace SurviveStayAlive
         {
             var randomXPosition = GetRandomStartPosition();
             var randomZPosition = GetRandomStartPosition();
-            var randomPosition = new Vector3(randomXPosition, 0.5f, randomZPosition);
+            var randomPosition = new Vector3(randomXPosition, START_PLAYER_POSITION_HEIGHT, randomZPosition);
 
             return randomPosition;
         }
 
         private float GetRandomStartPosition()
         {
-            return ((float)random.NextDouble() - 0.5f) * 5;
+            return ((float)random.NextDouble() - 0.5f) * MAX_START_POSITION_VALUE;
         }
     }
 }

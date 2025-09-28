@@ -10,6 +10,9 @@ namespace SurviveStayAlive
 {
     public class MainMenuController : MonoBehaviour
     {
+        private const float LOAD_LEVEL_DELAY_SEC = 2f;
+        private const float RESTART_LEVEL_DELAY_SEC = 2f;
+
         [SerializeField] Image background;
         [SerializeField] TextMeshProUGUI messageText;
 
@@ -136,19 +139,21 @@ namespace SurviveStayAlive
 
         private bool IsSlotCorrect(string slotValue)
         {
+            const int MIN_SLOT_VALUE = 1;
+            const int MAX_SLOT_VALUE = 3;
+
             var isNumber = int.TryParse(slotValue, out var intValue);
             if (!isNumber) {
                 CurrentSlot = -1;
                 return false;
             }
 
-            if (intValue is < 1 or > 3) {
+            if (intValue is < MIN_SLOT_VALUE or > MAX_SLOT_VALUE) {
                 slotInputField.text = string.Empty;
                 CurrentSlot = -1;
                 return false;
             }
 
-            // Правильное значение 1, 2 или 3
             CurrentSlot = intValue;
             return true;
         }
@@ -169,7 +174,7 @@ namespace SurviveStayAlive
 
         private IEnumerator CoRestartLevelAfterDelay()
         {
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(RESTART_LEVEL_DELAY_SEC);
 
             SetMessage(false);
             GameModel.Instance.GameController.RestartLevel();
@@ -177,7 +182,7 @@ namespace SurviveStayAlive
 
         private IEnumerator CoLoadLevelAfterDelay()
         {
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(LOAD_LEVEL_DELAY_SEC);
 
             SetMessage(false);
             GameModel.Instance.GameController.LoadNextLevel();

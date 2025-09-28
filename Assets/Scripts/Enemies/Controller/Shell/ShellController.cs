@@ -7,12 +7,10 @@ namespace Enemies.Controller.Shell
 {
     public class ShellController : MonoBehaviour
     {
-        private int currentDamage;
-        
-        private Vector3 moveVector = Vector3.zero;
-
         private const float TIME_ALIVE_SEC = 10f;
 
+        private int currentDamage;
+        private Vector3 moveVector = Vector3.zero;
         private float timerAlive = 0;
 
         private void Update()

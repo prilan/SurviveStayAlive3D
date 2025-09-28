@@ -11,6 +11,9 @@ namespace SurviveStayAlive
 {
     public class EnemiesManager : MonoSingleton<EnemiesManager>
     {
+        private const float START_ENEMY_POSITION_HEIGHT = 0.5f;
+        private const float MAX_START_POSITION_PLATE_SIZE = 30;
+
         [SerializeField] private EnemyController enemyControllerPrefab;
         [SerializeField] private Transform enemiesTransform;
 
@@ -61,14 +64,14 @@ namespace SurviveStayAlive
         {
             var randomXPosition = GetRandomStartPosition();
             var randomZPosition = GetRandomStartPosition();
-            var randomPosition = new Vector3(randomXPosition, 0.5f, randomZPosition);
+            var randomPosition = new Vector3(randomXPosition, START_ENEMY_POSITION_HEIGHT, randomZPosition);
 
             return randomPosition;
         }
 
         private float GetRandomStartPosition()
         {
-            return ((float)random.NextDouble() - 0.5f) * 30;
+            return ((float)random.NextDouble() - 0.5f) * MAX_START_POSITION_PLATE_SIZE;
         }
     }
 }

@@ -7,6 +7,8 @@ namespace Players
 {
     public class PlayerController : MonoBehaviour
     {
+        private const float SENSITIVITY_COEFFICIENT = 0.001f;
+
         [SerializeField] private Color defaultColor = Color.white;
         [SerializeField] private Color activeColor = Color.blue;
         [SerializeField] private Color finishedColor = Color.green;
@@ -19,8 +21,7 @@ namespace Players
         private Player currentPlayer;
 
         private MeshRenderer meshRenderer;
-        
-        private readonly float sensitivityKoefficient = 0.001f;
+
         private float sensitivityShiftPerPress;
 
         private Vector3 force = Vector3.zero;
@@ -31,7 +32,7 @@ namespace Players
         {
             meshRenderer = GetComponent<MeshRenderer>();
 
-            sensitivityShiftPerPress = currentPlayer.Speed * sensitivityKoefficient;
+            sensitivityShiftPerPress = currentPlayer.Speed * SENSITIVITY_COEFFICIENT;
         }
 
         private void Update()
