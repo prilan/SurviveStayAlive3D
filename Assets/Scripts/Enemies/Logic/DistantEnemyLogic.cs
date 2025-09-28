@@ -4,7 +4,7 @@ using SurviveStayAlive;
 using UnityEngine;
 using Utility;
 
-namespace Enemies
+namespace Enemies.Logic
 {
     public class DistantEnemyLogic
     {

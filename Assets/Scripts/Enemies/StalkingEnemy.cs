@@ -1,4 +1,6 @@
 ﻿using System;
+using Enemies.Interfaces;
+using Enemies.Logic;
 using Factories.EnemyFactories;
 using Players;
 using UnityEngine;

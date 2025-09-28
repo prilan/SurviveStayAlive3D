@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Enemies;
-using Enemies.Shell;
+using Enemies.Controller;
+using Enemies.Controller.Shell;
 using UnityEngine;
 using Utility;
 using Random = System.Random;

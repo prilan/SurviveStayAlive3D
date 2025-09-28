@@ -1,7 +1,7 @@
 ﻿using Players;
 using UnityEngine;
 
-namespace Enemies
+namespace Enemies.Interfaces
 {
     public interface IEnemyDistant
     {

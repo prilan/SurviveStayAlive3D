@@ -1,4 +1,6 @@
-﻿using Factories.EnemyFactories;
+﻿using Enemies.Interfaces;
+using Enemies.Logic;
+using Factories.EnemyFactories;
 using Players;
 using SurviveStayAlive;
 using UnityEngine;

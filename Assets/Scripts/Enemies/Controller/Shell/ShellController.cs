@@ -3,7 +3,7 @@ using SurviveStayAlive;
 using UnityEngine;
 using Utility;
 
-namespace Enemies.Shell
+namespace Enemies.Controller.Shell
 {
     public class ShellController : MonoBehaviour
     {

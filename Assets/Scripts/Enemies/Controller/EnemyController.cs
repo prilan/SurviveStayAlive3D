@@ -2,7 +2,7 @@
 using SurviveStayAlive;
 using UnityEngine;
 
-namespace Enemies
+namespace Enemies.Controller
 {
     public class EnemyController : MonoBehaviour
     {
