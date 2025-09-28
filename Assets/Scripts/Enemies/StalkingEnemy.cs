@@ -47,8 +47,8 @@ namespace Enemies
             var deX = playerPosition.x - position.x;
             var deZ = playerPosition.z - position.z;
 
-            var deltaX = (float)Math.Sqrt(Math.Pow(speedDelta, 2) / (1 + Math.Pow((deZ / deX), 2)));
-            var deltaZ = (deltaX * deZ) / deZ;
+            var deltaX = (float)Math.Sqrt(Math.Pow(speedDelta, 2) / (1 + Math.Pow(deZ / deX, 2)));
+            var deltaZ = deltaX * deZ / deZ;
 
             if (deX < 0)
                 deltaX *= -1;

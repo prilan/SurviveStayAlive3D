@@ -82,7 +82,7 @@ namespace Players
         private void ProcessInExitArea()
         {
             const int EXIT_AREA_LAYER_ID = 6;
-            const int exitAreaLayerMask = (1 << EXIT_AREA_LAYER_ID);
+            const int exitAreaLayerMask = 1 << EXIT_AREA_LAYER_ID;
 
             var isInExitArea = Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down), out RaycastHit hit, Mathf.Infinity, exitAreaLayerMask);
 
@@ -123,7 +123,7 @@ namespace Players
         private void ProcessOnLevelSurface()
         {
             const int LEVEL_SURFACE_LAYER_ID = 3;
-            const int surfaceLayerMask = (1 << LEVEL_SURFACE_LAYER_ID);
+            const int surfaceLayerMask = 1 << LEVEL_SURFACE_LAYER_ID;
 
             var isOnLevelSurface = Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down), out RaycastHit hit, Mathf.Infinity, surfaceLayerMask);
 
@@ -161,7 +161,7 @@ namespace Players
             meshRenderer.material.SetColor("_Color", isActive ? activeColor : defaultColor);
         }
 
-        public void SetPlayerFinished()
+        private void SetPlayerFinished()
         {
             meshRenderer.material.SetColor("_Color", finishedColor);
 

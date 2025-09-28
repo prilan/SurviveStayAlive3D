@@ -48,7 +48,7 @@ namespace Enemies.Shell
             transform.position = new Vector3(x, y, z);
         }
 
-        public void SetShellDamge(int damage)
+        public void SetShellDamage(int damage)
         {
             currentDamage = damage;
         }

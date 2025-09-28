@@ -6,9 +6,9 @@ namespace Players
     public abstract class Player
     {
         public int Health;
-        public int Speed;
+        public readonly int Speed;
 
-        public Player(PlayerFactory playerFactory) {
+        protected Player(PlayerFactory playerFactory) {
             Health = playerFactory.Health;
             Speed = playerFactory.Speed;
         }

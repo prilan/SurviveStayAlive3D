@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Enemies
 {
-    public class MovableEnemy : AbstractEnemy, IEnemyMovable
+    public abstract class MovableEnemy : AbstractEnemy, IEnemyMovable
     {
         public int Speed { get; }
 

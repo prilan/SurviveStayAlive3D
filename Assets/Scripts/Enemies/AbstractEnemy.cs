@@ -7,7 +7,7 @@ namespace Enemies
 {
     public abstract class AbstractEnemy
     {
-        public int Damage;
+        protected readonly int Damage;
 
         public Color Color;
 
@@ -15,7 +15,7 @@ namespace Enemies
 
         public event Action OnAttackDone = () => { };
 
-        public AbstractEnemy(AbstractEnemyFactory enemyFactory)
+        protected AbstractEnemy(AbstractEnemyFactory enemyFactory)
         {
             Damage = enemyFactory.Damage;
 
@@ -26,7 +26,7 @@ namespace Enemies
 
         public abstract void Attack(Player player);
 
-        public void AttackDone()
+        protected void AttackDone()
         {
             OnAttackDone();
         }

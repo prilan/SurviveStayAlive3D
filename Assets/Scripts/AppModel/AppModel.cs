@@ -132,10 +132,11 @@ namespace SurviveStayAlive
 
                 var playerController = PlayersManager.Instance.Players.Values.ElementAt(index);
 
-                var player = new PlayerFormat();
-
-                player.health = playerController.Player.Health;
-                player.position = playerController.transform.position;
+                var player = new PlayerFormat
+                {
+                    health = playerController.Player.Health,
+                    position = playerController.transform.position
+                };
 
                 SaveDataState.SaveData.players.Add(player);
             }
@@ -148,10 +149,11 @@ namespace SurviveStayAlive
 
                 var enemyController = EnemiesManager.Instance.Enemies.Values.ElementAt(index);
 
-                var enemy = new EnemyFormat();
-
-                enemy.enemyType = enemyController.Enemy.EnemyType.ToString();
-                enemy.position = enemyController.StartPosition;
+                var enemy = new EnemyFormat
+                {
+                    enemyType = enemyController.Enemy.EnemyType.ToString(),
+                    position = enemyController.StartPosition
+                };
 
                 SaveDataState.SaveData.enemies.Add(enemy);
             }

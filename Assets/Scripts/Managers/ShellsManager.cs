@@ -27,7 +27,7 @@ namespace SurviveStayAlive
 
             var deltaVector = targetPosition - startPosition;
 
-            shellController.SetShellDamge(currentDamage);
+            shellController.SetShellDamage(currentDamage);
             shellController.StartMove(deltaVector);
         }
 

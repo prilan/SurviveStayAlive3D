@@ -30,7 +30,6 @@ namespace SurviveStayAlive
         private void Initialize()
         {
             AppModel.Instance.Init(new LogicState(LogicStateEnum.PlayState));
-
             AppModel.Instance.LoadLevelsConfig();
 
             CreatePlayersAndEnemies();
@@ -62,7 +61,6 @@ namespace SurviveStayAlive
             AppModel.Instance.Init(new LogicState(LogicStateEnum.PlayState));
 
             RemoveAllGameEntities();
-
             CreatePlayersAndEnemies();
 
             GameEventEmitter.OnRestartLevel();
@@ -71,11 +69,9 @@ namespace SurviveStayAlive
         public void LoadNextLevel()
         {
             AppModel.Instance.Init(new LogicState(LogicStateEnum.PlayState));
-
             AppModel.Instance.LoadNextLevel();
 
             RemoveAllGameEntities();
-
             CreatePlayersAndEnemies();
 
             GameEventEmitter.OnRestartLevel();
@@ -86,7 +82,6 @@ namespace SurviveStayAlive
             AppModel.Instance.LoadSavedState();
 
             RemoveAllGameEntities();
-
             CreatePlayersAndEnemies();
 
             var playerCount = AppModel.Instance.CurrentLevel.playerCount;
