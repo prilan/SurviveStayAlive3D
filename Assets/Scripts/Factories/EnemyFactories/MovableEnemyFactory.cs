@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Enemies.Logic;
+using UnityEngine;
 
 namespace Factories.EnemyFactories
 {
@@ -9,5 +10,12 @@ namespace Factories.EnemyFactories
         public override int Damage { get => 8; }
 
         public override Color Color { get => Color.yellow; }
+
+        public MovableEnemyFactory()
+        {
+            DistantEnemyLogic = new DistantEnemyLogic();
+        }
+
+        public readonly DistantEnemyLogic DistantEnemyLogic;
     }
 }

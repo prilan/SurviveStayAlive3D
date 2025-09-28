@@ -13,7 +13,7 @@ namespace Enemies.Logic
         private Action<PlayerController> ActionWhenClose;
         private Action<Transform, PlayerController> ActionWhenNear;
         
-        public DistantEnemyLogic(int distance)
+        public DistantEnemyLogic(int distance = 0)
         {
             _distance = distance;
         }
@@ -30,11 +30,11 @@ namespace Enemies.Logic
                 var playerController = playerPair.Value;
                 var distanceToPlayer = Vector3.Distance(playerController.transform.position, transform.position);
                 if (distanceToPlayer < CommonUtility.MINIMAL_DISTANCE_TO_PLAYER) {
-                    ActionWhenClose(playerController);
+                    ActionWhenClose?.Invoke(playerController);
                 }
 
                 if (distanceToPlayer < _distance) {
-                    ActionWhenNear(transform, playerController);
+                    ActionWhenNear?.Invoke(transform, playerController);
                 }
             }
         }
