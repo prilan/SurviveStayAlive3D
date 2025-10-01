@@ -7,8 +7,6 @@ namespace Players
 {
     public class PlayerController : MonoBehaviour
     {
-        private const float SENSITIVITY_COEFFICIENT = 0.001f;
-
         [SerializeField] private Color defaultColor = Color.white;
         [SerializeField] private Color activeColor = Color.blue;
         [SerializeField] private Color finishedColor = Color.green;
@@ -22,17 +20,13 @@ namespace Players
 
         private MeshRenderer meshRenderer;
 
-        private float sensitivityShiftPerPress;
-
-        private Vector3 force = Vector3.zero;
-
         public Player Player => currentPlayer;
 
         private void Start()
         {
             meshRenderer = GetComponent<MeshRenderer>();
 
-            sensitivityShiftPerPress = currentPlayer.Speed * SENSITIVITY_COEFFICIENT;
+            Player.SetStartPosition(transform.position);
         }
 
         private void Update()
@@ -53,25 +47,26 @@ namespace Players
         private void ProcessKeyPress()
         {
             if (Input.GetKey("w") || Input.GetKey(KeyCode.UpArrow)) {
-                var newPosition = transform.position;
-                newPosition.z += sensitivityShiftPerPress;
-                transform.position = newPosition;
+                Player.Move(new Vector3(0, 0, 1));
+                ChangePosition();
             }
             if (Input.GetKey("a") || Input.GetKey(KeyCode.LeftArrow)) {
-                var newPosition = transform.position;
-                newPosition.x -= sensitivityShiftPerPress;
-                transform.position = newPosition;
+                Player.Move(new Vector3(-1, 0, 0));
+                ChangePosition();
             }
             if (Input.GetKey("s") || Input.GetKey(KeyCode.DownArrow)) {
-                var newPosition = transform.position;
-                newPosition.z -= sensitivityShiftPerPress;
-                transform.position = newPosition;
+                Player.Move(new Vector3(0, 0, -1));
+                ChangePosition();
             }
             if (Input.GetKey("d") || Input.GetKey(KeyCode.RightArrow)) {
-                var newPosition = transform.position;
-                newPosition.x += sensitivityShiftPerPress;
-                transform.position = newPosition;
+                Player.Move(new Vector3(1, 0, 0));
+                ChangePosition();
             }
+        }
+        
+        private void ChangePosition()
+        {
+            transform.position = Player.GetPosition();
         }
 
         private void ProcessPosition()

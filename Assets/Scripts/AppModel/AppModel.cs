@@ -36,8 +36,14 @@ namespace SurviveStayAlive
         {
             PlayerDictionary.Clear();
 
-            for (var index = 0; index < Instance.CurrentLevel.playerCount; index++) {
-                Player player = new BasePlayer(new BasePlayerFactory());
+            for (var index = 0; index < Instance.CurrentLevel.playerCount; index++)
+            {
+                Player player = index switch
+                {
+                    0 => new BasePlayer(new BasePlayerFactory()),
+                    1 => new BasePlayer(new SpeedPlayerFactory()),
+                    _ => new BasePlayer(new BasePlayerFactory())
+                };
                 PlayerDictionary.Add(index, player);
             }
         }

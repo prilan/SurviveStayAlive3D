@@ -2,13 +2,11 @@
 
 namespace Factories.PlayerFactories
 {
-    public class BasePlayerFactory : PlayerFactory
+    public class SpeedPlayerFactory : BasePlayerFactory
     {
-        public override int Health => 100;
-        
         public override PlayerMovement CreateMovement()
         {
-            return new NormalPlayerMovement();
+            return new SpeedPlayerMovement();
         }
     }
 }
